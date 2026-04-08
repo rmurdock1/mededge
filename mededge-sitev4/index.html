@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="MedEdge automates prior authorizations for specialty medical practices. Connect to your practice management system, check PA requirements instantly, recover denied claims, and see how much revenue you are missing.">
+<meta property="og:title" content="MedEdge | The edge your practice needs">
+<meta property="og:description" content="Stop losing patients and revenue to prior auth delays. MedEdge automates the process, recovers denied claims, and shows you the revenue you are missing.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0F4A38">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%230F4A38'/><text x='16' y='22' text-anchor='middle' fill='white' font-size='16' font-family='Georgia'>M</text></svg>">
+<title>MedEdge | The edge your practice needs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c-bg: #FAFAF8; --c-surface: #FFFFFF; --c-text: #1A1A18; --c-text-mid: #5C5C56;
+    --c-text-light: #8A8A82; --c-accent: #1B6B52; --c-accent-light: #E8F5EF;
+    --c-accent-dark: #0F4A38; --c-warm: #F5F0E8; --c-red: #C0392B; --c-border: #E8E6E0;
+    --c-blue: #1A5276; --c-blue-light: #EBF5FB; --c-amber: #7D5A0B; --c-amber-light: #FEF5E7;
+    --font-display: 'Fraunces', Georgia, serif; --font-body: 'DM Sans', -apple-system, sans-serif;
+    --max-w: 960px; --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+  body { font-family:var(--font-body); background:var(--c-bg); color:var(--c-text); line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; background:rgba(250,250,248,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--c-border); padding:0 24px; }
+  .nav-inner { max-width:var(--max-w); margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:60px; }
+  .logo { font-family:var(--font-display); font-weight:600; font-size:20px; color:var(--c-accent-dark); letter-spacing:-0.5px; }
+  .nav-badge { font-size:11px; font-weight:500; background:var(--c-accent-light); color:var(--c-accent); padding:4px 10px; border-radius:20px; }
+
+  .hero { max-width:var(--max-w); margin:0 auto; padding:140px 24px 80px; text-align:center; }
+  .hero-eyebrow { font-size:13px; font-weight:500; text-transform:uppercase; letter-spacing:1.5px; color:var(--c-accent); margin-bottom:20px; }
+  .hero h1 { font-family:var(--font-display); font-size:clamp(30px,5vw,46px); font-weight:600; line-height:1.15; max-width:740px; margin:0 auto 24px; letter-spacing:-1px; }
+  .hero h1 em { font-style:italic; color:var(--c-accent); }
+  .hero-sub { font-size:18px; color:var(--c-text-mid); max-width:560px; margin:0 auto 36px; line-height:1.7; }
+  .cta-btn { display:inline-block; background:var(--c-accent); color:#fff; font-family:var(--font-body); font-size:15px; font-weight:500; padding:14px 32px; border:none; border-radius:8px; cursor:pointer; transition:background 0.2s var(--ease),transform 0.15s var(--ease); text-decoration:none; }
+  .cta-btn:hover { background:var(--c-accent-dark); transform:translateY(-1px); }
+  .hero-note { font-size:13px; color:var(--c-text-light); margin-top:12px; }
+
+  .trust-bar { max-width:var(--max-w); margin:0 auto; padding:0 24px 60px; display:flex; justify-content:center; gap:32px; flex-wrap:wrap; }
+  .trust-item { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--c-text-mid); font-weight:500; }
+  .trust-icon { width:20px; height:20px; background:var(--c-accent-light); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--c-accent); }
+
+  section { max-width:var(--max-w); margin:0 auto; padding:60px 24px; }
+  .section-label { font-size:12px; font-weight:500; text-transform:uppercase; letter-spacing:1.5px; color:var(--c-accent); margin-bottom:12px; }
+  .section-title { font-family:var(--font-display); font-size:clamp(24px,3.5vw,34px); font-weight:600; line-height:1.2; margin-bottom:12px; letter-spacing:-0.5px; }
+  .section-sub { font-size:16px; color:var(--c-text-mid); max-width:520px; line-height:1.7; margin-bottom:40px; }
+  .divider { max-width:var(--max-w); margin:0 auto; padding:0 24px; }
+  .divider hr { border:none; height:1px; background:var(--c-border); }
+
+  .stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; }
+  .stat-card { background:var(--c-surface); border:1px solid var(--c-border); border-radius:12px; padding:24px; }
+  .stat-num { font-family:var(--font-display); font-size:28px; font-weight:600; color:var(--c-red); line-height:1; margin-bottom:8px; }
+  .stat-card h3 { font-size:16px; font-weight:600; margin-bottom:8px; }
+  .stat-card p { font-size:14px; color:var(--c-text-mid); line-height:1.6; }
+
+  .how-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; }
+  .how-step { text-align:center; padding:32px 20px; background:var(--c-surface); border:1px solid var(--c-border); border-radius:12px; }
+  .how-num { width:36px; height:36px; background:var(--c-warm); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:600; font-size:16px; color:var(--c-accent-dark); margin-bottom:16px; }
+  .how-step h3 { font-size:15px; font-weight:600; margin-bottom:8px; }
+  .how-step p { font-size:13px; color:var(--c-text-mid); line-height:1.6; }
+
+  .moat-grid { display:grid; grid-template-columns:1fr; gap:20px; }
+  .moat-card { background:var(--c-surface); border:1px solid var(--c-border); border-radius:16px; padding:28px 28px 24px; display:grid; grid-template-columns:56px 1fr; gap:20px; align-items:start; }
+  .moat-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+  .moat-card h3 { font-size:17px; font-weight:600; margin-bottom:6px; }
+  .moat-card p { font-size:14px; color:var(--c-text-mid); line-height:1.7; }
+  .moat-highlight { font-family:var(--font-display); font-weight:600; color:var(--c-accent-dark); }
+
+  .journey-step { display:grid; grid-template-columns:56px 1fr; gap:20px; padding-bottom:32px; }
+  .journey-step:last-child { padding-bottom:0; }
+  .journey-marker { display:flex; flex-direction:column; align-items:center; }
+  .journey-dot { width:40px; height:40px; background:var(--c-accent-light); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  .journey-line { width:2px; flex:1; background:var(--c-border); margin-top:8px; }
+  .journey-step:last-child .journey-line { display:none; }
+  .journey-content { background:var(--c-surface); border:1px solid var(--c-border); border-radius:12px; padding:20px 24px; }
+  .journey-phase { font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:1px; color:var(--c-accent); margin-bottom:4px; }
+  .journey-content h3 { font-size:16px; font-weight:600; margin-bottom:6px; }
+  .journey-content p { font-size:14px; color:var(--c-text-mid); line-height:1.6; }
+  .journey-tag { display:inline-block; margin-top:10px; font-size:11px; font-weight:500; background:var(--c-accent-light); color:var(--c-accent); padding:3px 10px; border-radius:20px; }
+
+  .ehr-section { background:var(--c-surface); border:1px solid var(--c-border); border-radius:16px; padding:40px; }
+  .ehr-header { text-align:center; margin-bottom:32px; }
+  .ehr-header h2 { font-family:var(--font-display); font-size:clamp(22px,3vw,28px); font-weight:600; margin-bottom:8px; }
+  .ehr-header p { font-size:15px; color:var(--c-text-mid); max-width:500px; margin:0 auto; line-height:1.7; }
+  .ehr-logos { display:flex; justify-content:center; align-items:center; gap:32px; flex-wrap:wrap; margin-bottom:32px; padding:24px 0; border-top:1px solid var(--c-border); border-bottom:1px solid var(--c-border); }
+  .ehr-logo-item { display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .ehr-logo-pill { background:var(--c-warm); border-radius:10px; padding:14px 24px; font-size:15px; font-weight:600; }
+  .ehr-logo-pill.active { background:var(--c-accent); color:#fff; }
+  .ehr-logo-status { font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.5px; }
+  .ehr-logo-status.live { color:var(--c-accent); }
+  .ehr-logo-status.soon { color:var(--c-text-light); }
+  .ehr-details { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; }
+  .ehr-detail { text-align:center; padding:20px 16px; border-radius:10px; background:var(--c-bg); }
+  .ehr-detail-icon { font-size:20px; margin-bottom:8px; }
+  .ehr-detail h4 { font-size:14px; font-weight:600; margin-bottom:4px; }
+  .ehr-detail p { font-size:12px; color:var(--c-text-mid); line-height:1.5; }
+  .ehr-footnote { text-align:center; margin-top:24px; padding-top:20px; border-top:1px solid var(--c-border); font-size:13px; color:var(--c-text-mid); line-height:1.7; }
+  .ehr-footnote strong { color:var(--c-text); }
+
+  .hipaa-box { background:var(--c-surface); border:2px solid var(--c-accent); border-radius:16px; padding:40px; text-align:center; max-width:640px; margin:0 auto; }
+  .hipaa-badge { display:inline-block; background:var(--c-accent); color:#fff; font-size:12px; font-weight:600; padding:6px 16px; border-radius:20px; letter-spacing:0.5px; margin-bottom:16px; }
+  .hipaa-box h2 { font-family:var(--font-display); font-size:24px; font-weight:600; margin-bottom:12px; }
+  .hipaa-box p { font-size:15px; color:var(--c-text-mid); line-height:1.7; margin-bottom:20px; }
+  .hipaa-checks { display:flex; flex-wrap:wrap; justify-content:center; gap:16px; font-size:14px; }
+  .hipaa-checks span { display:flex; align-items:center; gap:6px; }
+  .check-mark { width:18px; height:18px; background:var(--c-accent-light); border-radius:50%; display:inline-flex; align-items:center; justify-content:center; color:var(--c-accent); font-size:11px; font-weight:700; }
+
+  .pricing-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; max-width:860px; margin:0 auto; }
+  .pricing-card { background:var(--c-surface); border:1px solid var(--c-border); border-radius:16px; padding:32px 28px; }
+  .pricing-card.featured { border:2px solid var(--c-accent); position:relative; }
+  .pricing-card.featured::before { content:'Most popular'; position:absolute; top:-11px; left:50%; transform:translateX(-50%); background:var(--c-accent); color:#fff; font-size:11px; font-weight:600; padding:3px 14px; border-radius:20px; }
+  .pricing-tier { font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--c-accent); margin-bottom:8px; }
+  .pricing-price { font-family:var(--font-display); font-size:36px; font-weight:700; line-height:1; margin-bottom:4px; }
+  .pricing-price span { font-size:15px; font-weight:400; color:var(--c-text-mid); }
+  .pricing-desc { font-size:13px; color:var(--c-text-mid); margin-bottom:20px; line-height:1.5; padding-bottom:20px; border-bottom:1px solid var(--c-border); }
+  .pricing-list { list-style:none; margin-bottom:24px; }
+  .pricing-list li { font-size:13px; padding:6px 0; display:flex; align-items:center; gap:8px; }
+  .pricing-cta { display:block; width:100%; text-align:center; padding:12px; border-radius:8px; font-family:var(--font-body); font-size:14px; font-weight:500; text-decoration:none; transition:all 0.2s var(--ease); cursor:pointer; border:none; }
+  .pricing-cta.primary { background:var(--c-accent); color:#fff; }
+  .pricing-cta.primary:hover { background:var(--c-accent-dark); }
+  .pricing-cta.secondary { background:transparent; color:var(--c-accent); border:1px solid var(--c-border); }
+  .pricing-cta.secondary:hover { background:var(--c-accent-light); }
+  .pricing-note { text-align:center; margin-top:20px; font-size:13px; color:var(--c-text-light); }
+
+  .cta-section { background:var(--c-accent-dark); border-radius:20px; padding:60px 40px; text-align:center; margin:60px 24px; max-width:calc(var(--max-w) - 48px); margin-left:auto; margin-right:auto; }
+  .cta-section h2 { font-family:var(--font-display); font-size:clamp(24px,3vw,32px); font-weight:600; color:#fff; margin-bottom:12px; }
+  .cta-section p { font-size:16px; color:rgba(255,255,255,0.75); max-width:480px; margin:0 auto 28px; line-height:1.7; }
+  .cta-section a { display:inline-block; background:#fff; color:var(--c-accent-dark); font-family:var(--font-body); font-size:15px; font-weight:600; padding:14px 32px; border-radius:8px; text-decoration:none; transition:transform 0.15s var(--ease); }
+  .cta-section a:hover { transform:translateY(-1px); }
+
+  footer { text-align:center; padding:40px 24px; font-size:13px; color:var(--c-text-light); }
+
+  @media (max-width:600px) {
+    .hero { padding:110px 20px 48px; }
+    .hero h1 { font-size:28px; letter-spacing:-0.5px; }
+    .hero-sub { font-size:16px; margin-bottom:28px; }
+    .cta-btn { width:100%; text-align:center; padding:16px; font-size:16px; }
+    section { padding:40px 20px; }
+    .section-title { font-size:24px; }
+    .trust-bar { gap:12px; flex-direction:column; align-items:center; padding-bottom:40px; }
+    .stat-grid, .how-grid { grid-template-columns:1fr; }
+    .stat-num { font-size:24px; }
+    .moat-card { grid-template-columns:1fr; text-align:center; }
+    .moat-icon { margin:0 auto; }
+    .journey-step { grid-template-columns:36px 1fr; gap:12px; }
+    .journey-dot { width:36px; height:36px; font-size:14px; }
+    .journey-content { padding:16px; }
+    .ehr-section { padding:24px 16px; }
+    .ehr-logos { gap:16px; }
+    .ehr-logo-pill { padding:10px 16px; font-size:13px; }
+    .ehr-details { grid-template-columns:1fr 1fr; gap:10px; }
+    .ehr-footnote { font-size:12px; text-align:left; }
+    .hipaa-box { padding:24px 16px; }
+    .hipaa-checks { flex-direction:column; align-items:flex-start; gap:10px; font-size:13px; }
+    .pricing-grid { grid-template-columns:1fr; }
+    .cta-section { padding:36px 20px; margin:40px 16px; border-radius:16px; }
+    .cta-section a { width:100%; text-align:center; display:block; }
+  }
+  @media (max-width:380px) {
+    .ehr-details { grid-template-columns:1fr; }
+  }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+  .hero-eyebrow { animation:fadeUp 0.6s var(--ease) 0.1s both; }
+  .hero h1 { animation:fadeUp 0.6s var(--ease) 0.2s both; }
+  .hero-sub { animation:fadeUp 0.6s var(--ease) 0.3s both; }
+  .cta-btn { animation:fadeUp 0.6s var(--ease) 0.4s both; }
+</style>
+</head>
+<body>
+
+<nav><div class="nav-inner">
+  <div class="logo">MedEdge</div>
+  <div class="nav-badge">HIPAA Compliant</div>
+</div></nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">For specialty medical practices</div>
+  <h1>Prior authorization is costing you patients, revenue, and sanity. <em>We automate it.</em></h1>
+  <p class="hero-sub">MedEdge connects to your practice management system and turns prior auth from a 12-hour weekly headache into a simple, trackable workflow. So you can say yes to more patients instead of turning them away.</p>
+  <a href="#interest" class="cta-btn">I'm interested, tell me more</a>
+  <p class="hero-note">No contracts. No IT setup. Works with ModMed and other PM systems.</p>
+</div>
+
+<div class="trust-bar">
+  <div class="trust-item"><div class="trust-icon">&#10003;</div> HIPAA compliant</div>
+  <div class="trust-item"><div class="trust-icon">&#10003;</div> No hardware to install</div>
+  <div class="trust-item"><div class="trust-icon">&#10003;</div> Works with ModMed, Nextech & more</div>
+  <div class="trust-item"><div class="trust-icon">&#10003;</div> Cancel anytime</div>
+</div>
+
+<div class="divider"><hr></div>
+
+<!-- THE PROBLEM -->
+<section>
+  <div class="section-label">The reality</div>
+  <div class="section-title">Prior auth is the #1 operational burden in specialty practices</div>
+  <p class="section-sub">Your staff spends hours on hold, chasing faxes, and resubmitting paperwork. Meanwhile, patients wait, cancel, or go elsewhere.</p>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-num">12+ hrs</div>
+      <h3>Per week on PA</h3>
+      <p>The average practice spends 12 hours every week just requesting prior authorizations. That is an entire staff member's day and a half, gone.</p>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">51%</div>
+      <h3>Complex PA denial rate</h3>
+      <p>Over half of complex prior auth requests in dermatology get denied on first submission. Most are overturned on appeal, but only if someone has time to fight it.</p>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">7-14 days</div>
+      <h3>Average turnaround</h3>
+      <p>Manual prior authorizations involve phone calls, faxes, and follow-ups that stretch for days or weeks. Every day of delay is a day your patient might cancel.</p>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">80%+</div>
+      <h3>Denials overturned on appeal</h3>
+      <p>Most PA denials are wrong. Payers deny by default knowing practices rarely have time to appeal. That is money left on the table every single month.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="section-label">How it works</div>
+  <div class="section-title">Set up in minutes. Not months.</div>
+  <p class="section-sub">MedEdge connects to your practice management system through the same secure, authorized channels your other tools already use.</p>
+  <div class="how-grid">
+    <div class="how-step">
+      <div class="how-num">1</div>
+      <h3>Log in and authorize</h3>
+      <p>Sign into your PM system and approve MedEdge as a connected app. Same process as adding any other tool to your system.</p>
+    </div>
+    <div class="how-step">
+      <div class="how-num">2</div>
+      <h3>We flag what needs PA</h3>
+      <p>MedEdge reads your schedule and insurance data, then automatically identifies which upcoming appointments need prior authorization.</p>
+    </div>
+    <div class="how-step">
+      <div class="how-num">3</div>
+      <h3>Your team moves fast</h3>
+      <p>For each PA, your staff sees exactly what the payer requires, tracks status in one place, and never loses track of a pending request again.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- WHAT SETS MEDEDGE APART -->
+<section>
+  <div class="section-label">What sets MedEdge apart</div>
+  <div class="section-title">Not just PA automation. A growth engine for your practice.</div>
+  <p class="section-sub">Most PA tools save you time. MedEdge saves you time and makes you money. Three features that no other PA tool offers.</p>
+
+  <div class="moat-grid">
+    <div class="moat-card">
+      <div class="moat-icon" style="background:var(--c-amber-light); color:var(--c-amber);">$</div>
+      <div>
+        <h3>Revenue Opportunity Radar</h3>
+        <p>See exactly how much revenue your practice is leaving on the table. MedEdge analyzes insurance enrollment data in your area and shows you which payers represent untapped patient volume. <span class="moat-highlight">"There are 4,200 UHC members within 10 miles of your office. You don't accept UHC. Estimated opportunity: $8,400 per month."</span> When MedEdge handles the PA burden, adding that payer becomes a no-brainer.</p>
+      </div>
+    </div>
+
+    <div class="moat-card">
+      <div class="moat-icon" style="background:#FCEBEB; color:#C0392B;">A</div>
+      <div>
+        <h3>Auto-Appeal Engine</h3>
+        <p>When a PA gets denied, MedEdge auto-generates a tailored appeal letter that cites the payer's own coverage policy, addresses the specific denial reason, and attaches the right documentation. Your staff reviews, clicks approve, and submits. <span class="moat-highlight">80% of denials are overturned on appeal, but fewer than 12% are ever appealed.</span> MedEdge closes that gap and recovers revenue that would otherwise disappear.</p>
+      </div>
+    </div>
+
+    <div class="moat-card">
+      <div class="moat-icon" style="background:var(--c-blue-light); color:var(--c-blue);">N</div>
+      <div>
+        <h3>Payer Intelligence Network</h3>
+        <p>Every PA processed through MedEdge feeds an anonymized, aggregated intelligence layer across all practices on our network. Over time, patterns emerge that no single practice could see alone. <span class="moat-highlight">"Aetna approves 92% of Dupixent requests when BSA photos are included. Without them, approval drops to 61%."</span> MedEdge tells your staff what to include before they submit, not after they get denied.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- PATIENT JOURNEY -->
+<section>
+  <div class="section-label">The full picture</div>
+  <div class="section-title">From scheduling to approval, PA handled at every step</div>
+  <p class="section-sub">MedEdge works across the patient journey, catching PA requirements early and keeping everything on track.</p>
+
+  <div class="journey-track">
+    <div class="journey-step">
+      <div class="journey-marker">
+        <div class="journey-dot">&#128197;</div>
+        <div class="journey-line"></div>
+      </div>
+      <div class="journey-content">
+        <div class="journey-phase">Appointment scheduled</div>
+        <h3>Instant PA requirement check</h3>
+        <p>A patient books an appointment for a biologic injection. MedEdge instantly checks their specific insurance plan and flags: "This payer requires prior authorization for Dupixent. Here is what they need." No more guessing, no more checking payer portals one by one.</p>
+        <span class="journey-tag">Catches PA requirements at scheduling, not the day before</span>
+      </div>
+    </div>
+
+    <div class="journey-step">
+      <div class="journey-marker">
+        <div class="journey-dot">&#128203;</div>
+        <div class="journey-line"></div>
+      </div>
+      <div class="journey-content">
+        <div class="journey-phase">Documentation assembly</div>
+        <h3>AI builds the submission package</h3>
+        <p>MedEdge pulls the clinical data your payer needs from your PM system: diagnosis codes, treatment history, step therapy documentation. The Payer Intelligence Network tells your staff exactly what documentation gets approved fastest for this specific payer. Everything is assembled into one submission-ready package.</p>
+        <span class="journey-tag">Intelligence-driven submissions that reduce denials</span>
+      </div>
+    </div>
+
+    <div class="journey-step">
+      <div class="journey-marker">
+        <div class="journey-dot">&#9201;</div>
+        <div class="journey-line"></div>
+      </div>
+      <div class="journey-content">
+        <div class="journey-phase">Tracking, appeals, and recovery</div>
+        <h3>Every PA in one dashboard. Denials fought automatically.</h3>
+        <p>Every prior auth across every patient and payer lives in one view. If a PA gets denied, the Auto-Appeal Engine generates a tailored appeal letter in seconds. Your staff reviews, approves, and submits. MedEdge tracks every dollar recovered so you see the impact every month.</p>
+        <span class="journey-tag">Revenue recovered, not revenue lost</span>
+      </div>
+    </div>
+
+    <div class="journey-step">
+      <div class="journey-marker">
+        <div class="journey-dot">&#128176;</div>
+      </div>
+      <div class="journey-content">
+        <div class="journey-phase">The result</div>
+        <h3>Accept more patients. Keep more revenue.</h3>
+        <p>Revenue Radar shows you the growth opportunity. MedEdge handles the PA burden that used to make that growth impossible. Your staff spends less time on hold and more time on care. And every PA approval, every appeal win, every dollar recovered is tracked so you see exactly what MedEdge is worth to your practice.</p>
+        <span class="journey-tag">The tool pays for itself</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- PM INTEGRATION -->
+<section>
+  <div class="ehr-section">
+    <div class="ehr-header">
+      <h2>Designed to connect to the PM systems you already use</h2>
+      <p>MedEdge is being built to integrate with the practice management systems that power specialty practices. We connect through the same secure, authorized channels that tools like Klara and Clearwave already use.</p>
+    </div>
+
+    <div class="ehr-logos">
+      <div class="ehr-logo-item">
+        <div class="ehr-logo-pill active">ModMed PM</div>
+        <div class="ehr-logo-status live">In development</div>
+      </div>
+      <div class="ehr-logo-item">
+        <div class="ehr-logo-pill">Nextech</div>
+        <div class="ehr-logo-status soon">Planned</div>
+      </div>
+      <div class="ehr-logo-item">
+        <div class="ehr-logo-pill">EZDERM</div>
+        <div class="ehr-logo-status soon">Planned</div>
+      </div>
+      <div class="ehr-logo-item">
+        <div class="ehr-logo-pill">NextGen</div>
+        <div class="ehr-logo-status soon">Planned</div>
+      </div>
+    </div>
+
+    <div class="ehr-details">
+      <div class="ehr-detail">
+        <div class="ehr-detail-icon">&#128274;</div>
+        <h4>Authorized connection</h4>
+        <p>We connect through your PM vendor's official, approved channels. The same way your lab and patient communication tools connect today.</p>
+      </div>
+      <div class="ehr-detail">
+        <div class="ehr-detail-icon">&#128100;</div>
+        <h4>You stay in control</h4>
+        <p>You authorize the connection from inside your PM system. Revoke access anytime with one click. Nothing happens without your approval.</p>
+      </div>
+      <div class="ehr-detail">
+        <div class="ehr-detail-icon">&#128065;</div>
+        <h4>Read-only by default</h4>
+        <p>MedEdge reads your data to find PA requirements and surface insights. It does not modify your records or your workflow.</p>
+      </div>
+      <div class="ehr-detail">
+        <div class="ehr-detail-icon">&#128203;</div>
+        <h4>BAA signed upfront</h4>
+        <p>We sign a Business Associate Agreement before any data flows. Your compliance team can review our security documentation anytime.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- HIPAA -->
+<section>
+  <div class="hipaa-box">
+    <div class="hipaa-badge">SECURITY FIRST</div>
+    <h2>HIPAA compliance is not an afterthought</h2>
+    <p>We built MedEdge with the understanding that patient data protection is non-negotiable. Your patients trust you. We take that seriously.</p>
+    <div class="hipaa-checks">
+      <span><span class="check-mark">&#10003;</span> Signed BAA on day one</span>
+      <span><span class="check-mark">&#10003;</span> End-to-end encryption</span>
+      <span><span class="check-mark">&#10003;</span> SOC 2 compliance</span>
+      <span><span class="check-mark">&#10003;</span> Access controls and audit logs</span>
+      <span><span class="check-mark">&#10003;</span> No patient data used for AI training</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><hr></div>
+
+<!-- PRICING -->
+<section>
+  <div class="section-label">Simple pricing</div>
+  <div class="section-title" style="text-align:center;">Pick what fits your practice</div>
+  <p class="section-sub" style="text-align:center;margin-left:auto;margin-right:auto;">Every plan is designed to save you more than it costs. If it does not, something is wrong.</p>
+
+  <div class="pricing-grid">
+    <div class="pricing-card">
+      <div class="pricing-tier">Starter</div>
+      <div class="pricing-price">$149<span>/mo per provider</span></div>
+      <p class="pricing-desc">See what needs PA before it becomes a fire drill. Perfect for practices that want visibility first.</p>
+      <ul class="pricing-list">
+        <li><span class="check-mark">&#10003;</span> Automatic PA requirement detection</li>
+        <li><span class="check-mark">&#10003;</span> Payer-specific documentation checklists</li>
+        <li><span class="check-mark">&#10003;</span> PA status tracking dashboard</li>
+        <li><span class="check-mark">&#10003;</span> Expiration and deadline alerts</li>
+        <li><span class="check-mark">&#10003;</span> HIPAA compliant with signed BAA</li>
+      </ul>
+      <a href="#interest" class="pricing-cta secondary">Get early access</a>
+    </div>
+
+    <div class="pricing-card featured">
+      <div class="pricing-tier">Growth</div>
+      <div class="pricing-price">$299<span>/mo per provider</span></div>
+      <p class="pricing-desc">AI handles the documentation so your staff handles the patients. Includes Revenue Radar insights.</p>
+      <ul class="pricing-list">
+        <li><span class="check-mark">&#10003;</span> Everything in Starter</li>
+        <li><span class="check-mark">&#10003;</span> AI-powered documentation assembly</li>
+        <li><span class="check-mark">&#10003;</span> Auto-pull clinical data from your PM</li>
+        <li><span class="check-mark">&#10003;</span> Revenue Opportunity Radar</li>
+        <li><span class="check-mark">&#10003;</span> Payer Intelligence Network insights</li>
+        <li><span class="check-mark">&#10003;</span> Dedicated onboarding support</li>
+      </ul>
+      <a href="#interest" class="pricing-cta primary">Get early access</a>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pricing-tier">Practice Pro</div>
+      <div class="pricing-price">$499<span>/mo per provider</span></div>
+      <p class="pricing-desc">The full operations layer. PA automation, auto-appeals, revenue recovery, and after-hours coverage.</p>
+      <ul class="pricing-list">
+        <li><span class="check-mark">&#10003;</span> Everything in Growth</li>
+        <li><span class="check-mark">&#10003;</span> Auto-Appeal Engine for denied PAs</li>
+        <li><span class="check-mark">&#10003;</span> Revenue recovery tracking</li>
+        <li><span class="check-mark">&#10003;</span> After-hours AI call assistant</li>
+        <li><span class="check-mark">&#10003;</span> Weekend cancellation slot recovery</li>
+        <li><span class="check-mark">&#10003;</span> Priority support</li>
+      </ul>
+      <a href="#interest" class="pricing-cta secondary">Get early access</a>
+    </div>
+  </div>
+  <p class="pricing-note">All plans include unlimited staff accounts. No setup fees. No long-term contracts.</p>
+</section>
+
+<!-- CTA -->
+<div class="cta-section" id="interest">
+  <h2>Interested? Let's talk.</h2>
+  <p>We are working with a small group of specialty practices to shape MedEdge. If this resonates, we would love your input. No commitment, just a conversation.</p>
+  <a href="mailto:keystoneproductmc@gmail.com?subject=I'm%20interested%20in%20MedEdge&body=Hi%2C%0A%0AI%20run%20a%20medical%20practice%20and%20I'm%20interested%20in%20learning%20more%20about%20MedEdge.%0A%0APractice%20name%3A%20%0ASpecialty%3A%20%0ANumber%20of%20providers%3A%20%0APM%20system%3A%20%0ABiggest%20prior%20auth%20challenge%3A%20%0A%0AThanks!">Send us a message &#8594;</a>
+</div>
+
+<footer>
+  <p>MedEdge. The edge your practice needs.<br>HIPAA compliant. Your data stays yours. Always.</p>
+</footer>
+
+</body>
+</html>

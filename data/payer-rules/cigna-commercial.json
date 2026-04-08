@@ -1,0 +1,72 @@
+[
+  {
+    "payer_name": "Cigna",
+    "plan_type": "Commercial",
+    "cpt_code": "J7500",
+    "icd10_code": null,
+    "pa_required": true,
+    "documentation_requirements": [
+      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Atopic dermatitis diagnosis with severity" },
+      { "item": "BSA assessment", "required": true, "description": "Moderate-to-severe AD (BSA ≥10% or significant face/hand involvement)" },
+      { "item": "Prior treatment history", "required": true, "description": "Failed topical prescription therapy for ≥3 months" },
+      { "item": "Lab results - TB test", "required": true, "description": "TB screening" }
+    ],
+    "submission_method": "portal",
+    "typical_turnaround_days": 5,
+    "step_therapy_required": true,
+    "step_therapy_details": "Must have tried and failed topical corticosteroids for at least 3 months or have documented contraindication.",
+    "last_verified_date": "2026-03-15",
+    "source_url": "https://www.cigna.com/static/www-cigna-com/docs/coverage-policies/pharmacy/dupixent.pdf",
+    "confidence_score": 0.85
+  },
+  {
+    "payer_name": "Cigna",
+    "plan_type": "Commercial",
+    "cpt_code": "J0135",
+    "icd10_code": null,
+    "pa_required": true,
+    "documentation_requirements": [
+      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Plaque psoriasis diagnosis" },
+      { "item": "BSA assessment", "required": true, "description": "Moderate-to-severe (BSA ≥10%)" },
+      { "item": "Prior treatment history", "required": true, "description": "Failed or contraindication to phototherapy or conventional systemic" },
+      { "item": "Lab results - TB test", "required": true, "description": "TB screening" }
+    ],
+    "submission_method": "portal",
+    "typical_turnaround_days": 5,
+    "step_therapy_required": true,
+    "step_therapy_details": "Must have tried and failed or have contraindication to methotrexate or phototherapy.",
+    "last_verified_date": "2026-03-15",
+    "source_url": "https://www.cigna.com/static/www-cigna-com/docs/coverage-policies/pharmacy/humira-psoriasis.pdf",
+    "confidence_score": 0.85
+  },
+  {
+    "payer_name": "Cigna",
+    "plan_type": "Commercial",
+    "cpt_code": "17311",
+    "icd10_code": null,
+    "pa_required": false,
+    "documentation_requirements": [],
+    "submission_method": "portal",
+    "typical_turnaround_days": null,
+    "step_therapy_required": false,
+    "step_therapy_details": null,
+    "last_verified_date": "2026-03-15",
+    "source_url": "https://www.cigna.com/static/www-cigna-com/docs/coverage-policies/medical/mohs-surgery.pdf",
+    "confidence_score": 0.8
+  },
+  {
+    "payer_name": "Cigna",
+    "plan_type": "Commercial",
+    "cpt_code": "96910",
+    "icd10_code": null,
+    "pa_required": false,
+    "documentation_requirements": [],
+    "submission_method": "portal",
+    "typical_turnaround_days": null,
+    "step_therapy_required": false,
+    "step_therapy_details": null,
+    "last_verified_date": "2026-03-15",
+    "source_url": "https://www.cigna.com/static/www-cigna-com/docs/coverage-policies/medical/phototherapy.pdf",
+    "confidence_score": 0.75
+  }
+]
