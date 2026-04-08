@@ -4,7 +4,18 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 
 ## Current Sprint
 
-**Sprint 1: Foundation** (Target: Weeks 1-2)
+**Sprint 3: Rule Schema Refactor** (in PR review)
+- [x] Split `payer_rules` → `payer_rules_drug` + `payer_rules_procedure`
+- [x] Add `rule_audit_log` (immutable, super_admin only) + capture triggers
+- [x] Add `super_admin` role and `is_internal` practice flag
+- [x] Create MedEdge Operations internal practice
+- [x] `bootstrap_super_admin` RPC + `grant-super-admin.ts` script
+- [x] Compatibility view `payer_rules` so existing `checkPARequired` keeps working
+- [x] TypeScript types for v2 schema + audit context helper
+- [x] Tests (35 passing)
+- [x] `docs/agent/rule-schema.md`
+
+**Sprint 1: Foundation** (Target: Weeks 1-2) — merged in PR #1
 - [x] Next.js project setup with App Router
 - [ ] Supabase project creation and HIPAA BAA signing
 - [x] Database schema: practices, patients, appointments, prior_auths, payer_rules, pa_outcomes, pa_activity_log, user_profiles
@@ -33,6 +44,68 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 ---
 
 ## Session Log
+
+## Session 2026-04-08
+
+### Goal
+Sprint 3 schema refactor: split `payer_rules` into typed drug and procedure tables, add an immutable rule audit log, introduce `super_admin` role and MedEdge Operations internal practice, and ship a compatibility view so the existing `checkPARequired` lookup keeps working until Sprint 6 rewrites it.
+
+### Completed
+- 7 new migrations under `supabase/migrations/20260408*`:
+  - Part 1: `super_admin` enum value, `is_internal` on practices, new `bcbs_licensee` / `audit_action` / `audit_source` enums
+  - Part 2: `payer_rules_drug` and `payer_rules_procedure` tables with full v2 schema, soft-delete columns, indexes, updated_at triggers
+  - Part 3: `rule_audit_log` with immutability triggers, shared `rule_audit_capture()` trigger function reading session GUCs, attached to both rule tables
+  - Part 4: rename old `payer_rules` to `payer_rules_legacy_v1` (preserved, frozen), best-effort migration of 25 rules into the new tables (J-codes → drug, everything else → procedure) with `confidence_score = 0.5` so they re-trigger the verification warning
+  - Part 5: `payer_rules` compatibility VIEW unioning the two new tables with documented lossiness, INSTEAD OF triggers blocking writes
+  - Part 6: RLS policies for new tables (auth read, super_admin write), `rule_audit_log` super-admin-only read, MedEdge Operations practice insert (idempotent)
+  - Part 7: `bootstrap_super_admin` SECURITY DEFINER RPC, granted to service_role only
+- TypeScript types: `PayerRuleDrug`, `PayerRuleProcedure`, `RuleAuditLogEntry`, `BcbsLicensee`, `AuditAction`, `AuditSource`, `StepTherapyDetails`, `AppealsPathway`, `LabRequirements`, `SiteOfServiceRestrictions`, `ModifierRequirements`, `UnitsOrFrequencyLimits`. Old `PayerRule` marked `@deprecated`.
+- `src/lib/audit-context.ts`: `AuditContext` type + factory functions (`manualAuditContext`, `seedAuditContext`, `policyWatchAuditContext`) and `toRpcAuditParams()` serializer
+- `scripts/grant-super-admin.ts`: idempotent bootstrap script that resolves an email to an auth.users.id and calls `bootstrap_super_admin`
+- `docs/agent/rule-schema.md`: full v2 schema documentation including the lossiness contract on the compat view
+- 12 new tests across `types.test.ts` and new `audit-context.test.ts`
+
+### Decisions Made
+- **Option A compat shim** over a hard cutover. Rationale: rewriting `checkPARequired` against the typed tables is its own sprint and shouldn't be tangled with the schema move. The view + INSTEAD OF triggers contain the lossiness explicitly so no future code accidentally treats the view as a real table.
+- **Audit context via session GUCs read by Postgres triggers** rather than application-level audit writes. Rationale: triggers fire on every mutation regardless of code path, so direct SQL edits, RPCs, and bulk imports are all covered. Triggers can't be bypassed by forgetful callers.
+- **`rule_audit_log` stays scoped to rules**, not unified with `pa_activity_log`. Different audience (super_admins vs practice staff), different retention, different RLS.
+- **No hybrid drug/procedure rules**. A bundled drug-administered-in-office service must be entered as two separate rules. Documented in the table comment and the agent doc.
+- **Drug rules use `hcpcs_code OR ndc_code` (CHECK constraint)** rather than a discriminator column. NDC is more precise but most policies cite J-codes; both must work.
+- **Confidence 0.5 on migrated rules** rather than preserving original confidence. The migration heuristic could be wrong in either direction; forcing re-verification in Sprint 5 is safer than trusting the rename.
+
+### Tests Added
+- `src/lib/types.test.ts`: PayerRuleDrug, PayerRuleProcedure, RuleAuditLogEntry, AuditAction, AuditSource, BcbsLicensee shape tests
+- `src/lib/audit-context.test.ts`: factory functions and the RPC serializer
+
+### Files Modified
+- `src/lib/types.ts` (extended)
+- `src/lib/types.test.ts` (extended)
+- `docs/PROGRESS.md` (this file)
+
+### Files Added
+- `supabase/migrations/20260408000001_schema_refactor_enums_and_practices.sql`
+- `supabase/migrations/20260408000002_schema_refactor_new_rule_tables.sql`
+- `supabase/migrations/20260408000003_schema_refactor_audit_log.sql`
+- `supabase/migrations/20260408000004_schema_refactor_migrate_data.sql`
+- `supabase/migrations/20260408000005_schema_refactor_compat_view.sql`
+- `supabase/migrations/20260408000006_schema_refactor_rls_and_seed.sql`
+- `supabase/migrations/20260408000007_schema_refactor_audit_helpers.sql`
+- `src/lib/audit-context.ts`
+- `src/lib/audit-context.test.ts`
+- `scripts/grant-super-admin.ts`
+- `docs/agent/rule-schema.md`
+
+### Open Questions (need human input)
+- [ ] Apply the 7 new migrations to hosted Supabase (paste the combined SQL file in the SQL editor) — defer until after PR review
+- [ ] After migration is applied, run `npx tsx scripts/grant-super-admin.ts <your-email>` to claim super_admin
+
+### Next Session Priority
+1. After PR #2 merges: cut `feat/admin-dashboard` for Sprint 4
+2. Sprint 4 brings the `/admin/*` route group, super_admin middleware, JSON-editor-based rule CRUD
+3. Sprint 5: fix the 25 broken seed rules (separate PR per payer)
+4. Sprint 6: rewrite `checkPARequired` against typed tables, drop the compat view
+
+---
 
 ## Session 2026-04-06
 
@@ -99,7 +172,9 @@ Significant technical decisions get documented here with context so future devel
 
 | Issue | Severity | Status | Notes |
 |-------|----------|--------|-------|
-| (none yet) | | | |
+| `payer_rules` view has lossy ICD-10 and step_therapy_details mapping | Medium — sprint-bounded | Accepted, resolved in Sprint 6 when checkPARequired is rewritten | The compat shim unnest()s `icd10_codes text[]` into multiple rows and stringifies structured `step_therapy_details` jsonb. Documented in `docs/agent/rule-schema.md` and the view's SQL comment. New code MUST read the typed tables directly. |
+| 25 seed rules need correction (~80% wrong per verification report) | High — flagged | Deferred to Sprint 5 | Migrated as-is into the new tables with `confidence_score = 0.5` so the UI flags every one as unverified. Sprint 5 will correct them per payer. |
+| Migrated rules have placeholder `drug_name`/`procedure_name` like `UNKNOWN (J7500)` | Low | Deferred to Sprint 5 | The legacy table never had a name field. Sprint 5 cleanup fills these in alongside the rule corrections. |
 
 ---
 
@@ -121,9 +196,9 @@ Track when we've identified a need for human expertise and whether it's been add
 
 ## Repo Health
 
-- **Last lint check**: 2026-04-06 (clean)
-- **Last build**: 2026-04-06 (clean, Next.js 16.2.2 Turbopack)
-- **Test coverage**: 7 tests passing (2 test files)
-- **Open branches**: main only
-- **Dependencies last updated**: 2026-04-06
-- **Supabase migrations**: 11 files ready (not yet applied to remote)
+- **Last lint check**: 2026-04-08 (clean)
+- **Last build**: 2026-04-08 (clean, Next.js 16.2.2 Turbopack)
+- **Test coverage**: 35 tests passing across 5 files
+- **Open branches**: `feat/schema-refactor` (PR #2)
+- **Merged PRs**: #1 (Sprint 1+2 foundation)
+- **Supabase migrations**: 18 files (11 from Sprint 1+2, 7 from Sprint 3 — Sprint 3 batch not yet applied to remote)
