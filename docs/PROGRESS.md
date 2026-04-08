@@ -105,6 +105,19 @@ Sprint 3 schema refactor: split `payer_rules` into typed drug and procedure tabl
 3. Sprint 5: fix the 25 broken seed rules (separate PR per payer)
 4. Sprint 6: rewrite `checkPARequired` against typed tables, drop the compat view
 
+### Sprint 5 forward-looking notes (from PR #2 review)
+The `payer_rules_drug` CHECK constraint requires `hcpcs_code` or `ndc_code`
+to be non-null. The current seed rules use `J7500` as the placeholder HCPCS
+for Dupixent but that's wrong — Sprint 5's Dupixent rewrite needs the real
+codes:
+
+- **Dupixent (dupilumab)**: `J0517`
+- **Humira (adalimumab)**: `J0139`
+- **Enbrel (etanercept)**: `J1438`
+
+Sprint 5 PRs should fix drug_name placeholders and HCPCS codes in the same
+commit that rewrites the documentation requirements.
+
 ---
 
 ## Session 2026-04-06
