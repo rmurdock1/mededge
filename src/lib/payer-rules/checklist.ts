@@ -1,20 +1,23 @@
 import type { DocumentationItem } from "@/lib/types";
-import type { PARequirement } from "./types";
+import type { PALookupResult } from "./types";
 
 /**
- * Generates a documentation checklist from PA requirements.
+ * Generates a documentation checklist from PA lookup results.
  * Each item starts uncompleted. Staff check items off as they gather docs.
+ *
+ * Accepts the new discriminated-union `PALookupResult[]` from
+ * `checkPARequired()`. Skips results where `pa_required !== true`.
  */
 export function generateChecklist(
-  requirements: PARequirement[]
+  results: PALookupResult[]
 ): DocumentationItem[] {
   const seen = new Set<string>();
   const checklist: DocumentationItem[] = [];
 
-  for (const req of requirements) {
-    if (req.pa_required !== true) continue;
+  for (const result of results) {
+    if (result.pa_required !== true) continue;
 
-    for (const item of req.documentation_requirements) {
+    for (const item of result.documentation_requirements) {
       // Deduplicate by item name
       if (seen.has(item.item)) continue;
       seen.add(item.item);

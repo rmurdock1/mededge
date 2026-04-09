@@ -61,30 +61,6 @@ export interface UserProfile {
   updated_at: string;
 }
 
-/**
- * @deprecated Reads from the payer_rules compatibility view (Sprint 3 shim).
- * Use PayerRuleDrug or PayerRuleProcedure for new code. Will be removed in
- * Sprint 6 when checkPARequired is rewritten against the typed tables.
- */
-export interface PayerRule {
-  id: string;
-  payer_name: string;
-  plan_type: string;
-  cpt_code: string;
-  icd10_code: string | null;
-  pa_required: boolean;
-  documentation_requirements: DocumentationItem[];
-  submission_method: SubmissionMethod;
-  typical_turnaround_days: number | null;
-  step_therapy_required: boolean;
-  step_therapy_details: string | null;
-  last_verified_date: string;
-  source_url: string;
-  confidence_score: number;
-  created_at: string;
-  updated_at: string;
-}
-
 // ---- v2 rule schema (Sprint 3) ----
 
 export type BcbsLicensee =
