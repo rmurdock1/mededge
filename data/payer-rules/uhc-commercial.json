@@ -1,113 +1,123 @@
-[
-  {
-    "payer_name": "UnitedHealthcare",
-    "plan_type": "Commercial",
-    "cpt_code": "J7500",
-    "icd10_code": null,
-    "pa_required": true,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Recent office visit note with ICD-10 diagnosis" },
-      { "item": "BSA (body surface area) assessment", "required": true, "description": "Documented percentage of body affected" },
-      { "item": "Prior treatment history", "required": true, "description": "List of treatments tried and failed including topicals and phototherapy" },
-      { "item": "Lab results - TB test", "required": true, "description": "TB screening results required before biologic initiation" },
-      { "item": "Photographs of affected areas", "required": false, "description": "Clinical photos showing severity" }
-    ],
-    "submission_method": "portal",
-    "typical_turnaround_days": 10,
-    "step_therapy_required": true,
-    "step_therapy_details": "Must have tried and failed at least one topical corticosteroid AND one systemic immunosuppressant (e.g., methotrexate, cyclosporine) before Dupixent approval.",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.uhcprovider.com/content/dam/provider/docs/public/prior-auth/drugs-702-biologics-atopic-dermatitis.pdf",
-    "confidence_score": 0.85
-  },
-  {
-    "payer_name": "UnitedHealthcare",
-    "plan_type": "Commercial",
-    "cpt_code": "J0135",
-    "icd10_code": null,
-    "pa_required": true,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Office visit note confirming plaque psoriasis diagnosis" },
-      { "item": "BSA assessment", "required": true, "description": "BSA must be documented as moderate-to-severe (typically >10%)" },
-      { "item": "Prior treatment history", "required": true, "description": "Documentation of failed conventional therapies" },
-      { "item": "Lab results - TB test", "required": true, "description": "TB screening required" },
-      { "item": "Hepatitis B/C screening", "required": true, "description": "Hepatitis panel results" }
-    ],
-    "submission_method": "portal",
-    "typical_turnaround_days": 10,
-    "step_therapy_required": true,
-    "step_therapy_details": "Must have tried and failed methotrexate or another conventional DMARD before Humira for psoriasis.",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.uhcprovider.com/content/dam/provider/docs/public/prior-auth/drugs-702-biologics-psoriasis.pdf",
-    "confidence_score": 0.85
-  },
-  {
-    "payer_name": "UnitedHealthcare",
-    "plan_type": "Commercial",
-    "cpt_code": "J1438",
-    "icd10_code": null,
-    "pa_required": true,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Office visit note with psoriasis/psoriatic arthritis diagnosis" },
-      { "item": "BSA assessment", "required": true, "description": "Documented body surface area involvement" },
-      { "item": "Prior treatment history", "required": true, "description": "Failed conventional therapies documentation" },
-      { "item": "Lab results - TB test", "required": true, "description": "TB screening" }
-    ],
-    "submission_method": "portal",
-    "typical_turnaround_days": 10,
-    "step_therapy_required": true,
-    "step_therapy_details": "Must have tried and failed methotrexate before Enbrel for psoriasis. Step therapy may be waived for psoriatic arthritis with rheumatology referral.",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.uhcprovider.com/content/dam/provider/docs/public/prior-auth/drugs-702-biologics-psoriasis.pdf",
-    "confidence_score": 0.85
-  },
-  {
-    "payer_name": "UnitedHealthcare",
-    "plan_type": "Commercial",
-    "cpt_code": "17311",
-    "icd10_code": null,
-    "pa_required": false,
-    "documentation_requirements": [],
-    "submission_method": "portal",
-    "typical_turnaround_days": null,
-    "step_therapy_required": false,
-    "step_therapy_details": null,
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.uhcprovider.com/content/dam/provider/docs/public/prior-auth/Mohs-Surgery-Policy.pdf",
-    "confidence_score": 0.8
-  },
-  {
-    "payer_name": "UnitedHealthcare",
-    "plan_type": "Commercial",
-    "cpt_code": "96910",
-    "icd10_code": null,
-    "pa_required": true,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Confirmed diagnosis requiring phototherapy" },
-      { "item": "Prior treatment history", "required": true, "description": "Documentation of failed topical therapies" },
-      { "item": "Treatment plan", "required": true, "description": "Planned number of sessions and frequency" }
-    ],
-    "submission_method": "portal",
-    "typical_turnaround_days": 7,
-    "step_therapy_required": true,
-    "step_therapy_details": "Must have tried and failed topical corticosteroids and/or topical calcineurin inhibitors before phototherapy.",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.uhcprovider.com/content/dam/provider/docs/public/prior-auth/phototherapy-policy.pdf",
-    "confidence_score": 0.8
-  },
-  {
-    "payer_name": "UnitedHealthcare",
-    "plan_type": "Commercial",
-    "cpt_code": "95044",
-    "icd10_code": null,
-    "pa_required": false,
-    "documentation_requirements": [],
-    "submission_method": "portal",
-    "typical_turnaround_days": null,
-    "step_therapy_required": false,
-    "step_therapy_details": null,
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.uhcprovider.com/content/dam/provider/docs/public/prior-auth/allergy-testing-policy.pdf",
-    "confidence_score": 0.75
-  }
-]
+{
+  "version": 2,
+  "payer_name": "UnitedHealthcare",
+  "plan_type": "Commercial",
+  "drugs": [
+    {
+      "hcpcs_code": "J0517",
+      "drug_name": "Dupixent (dupilumab)",
+      "icd10_codes": [],
+      "pa_required": true,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Recent office visit note with ICD-10 diagnosis" },
+        { "item": "BSA (body surface area) assessment", "required": true, "description": "Documented percentage of body affected" },
+        { "item": "Prior treatment history", "required": true, "description": "List of treatments tried and failed including topicals and phototherapy" },
+        { "item": "Lab results - TB test", "required": true, "description": "TB screening results required before biologic initiation" },
+        { "item": "Photographs of affected areas", "required": false, "description": "Clinical photos showing severity" }
+      ],
+      "submission_method": "portal",
+      "typical_turnaround_days": 10,
+      "step_therapy_required": true,
+      "step_therapy_details": {
+        "required_drugs": ["topical corticosteroid", "methotrexate OR cyclosporine"],
+        "duration_days": 90,
+        "exceptions": ["Documented contraindication to systemic immunosuppressants"]
+      },
+      "lab_requirements": { "tb_test": true, "hepatitis_panel": false, "cbc": false, "liver_function": false },
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.uhcprovider.com/content/dam/provider/docs/public/prior-auth/drugs-702-biologics-atopic-dermatitis.pdf",
+      "confidence_score": 0.7
+    },
+    {
+      "hcpcs_code": "J0139",
+      "drug_name": "Humira (adalimumab)",
+      "icd10_codes": [],
+      "pa_required": true,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Office visit note confirming plaque psoriasis diagnosis" },
+        { "item": "BSA assessment", "required": true, "description": "BSA must be documented as moderate-to-severe (typically >10%)" },
+        { "item": "Prior treatment history", "required": true, "description": "Documentation of failed conventional therapies" },
+        { "item": "Lab results - TB test", "required": true, "description": "TB screening required" },
+        { "item": "Hepatitis B/C screening", "required": true, "description": "Hepatitis panel results" }
+      ],
+      "submission_method": "portal",
+      "typical_turnaround_days": 10,
+      "step_therapy_required": true,
+      "step_therapy_details": {
+        "required_drugs": ["methotrexate"],
+        "duration_days": 90,
+        "exceptions": ["Psoriatic arthritis with rheumatology referral may waive step therapy"]
+      },
+      "lab_requirements": { "tb_test": true, "hepatitis_panel": true, "cbc": false, "liver_function": false },
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.uhcprovider.com/content/dam/provider/docs/public/prior-auth/drugs-702-biologics-psoriasis.pdf",
+      "confidence_score": 0.7
+    },
+    {
+      "hcpcs_code": "J1438",
+      "drug_name": "Enbrel (etanercept)",
+      "icd10_codes": [],
+      "pa_required": true,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Office visit note with psoriasis/psoriatic arthritis diagnosis" },
+        { "item": "BSA assessment", "required": true, "description": "Documented body surface area involvement" },
+        { "item": "Prior treatment history", "required": true, "description": "Failed conventional therapies documentation" },
+        { "item": "Lab results - TB test", "required": true, "description": "TB screening" }
+      ],
+      "submission_method": "portal",
+      "typical_turnaround_days": 10,
+      "step_therapy_required": true,
+      "step_therapy_details": {
+        "required_drugs": ["methotrexate"],
+        "duration_days": 90,
+        "exceptions": ["Step therapy may be waived for psoriatic arthritis with rheumatology referral"]
+      },
+      "lab_requirements": { "tb_test": true, "hepatitis_panel": false, "cbc": false, "liver_function": false },
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.uhcprovider.com/content/dam/provider/docs/public/prior-auth/drugs-702-biologics-psoriasis.pdf",
+      "confidence_score": 0.7
+    }
+  ],
+  "procedures": [
+    {
+      "cpt_code": "17311",
+      "procedure_name": "Mohs micrographic surgery, first stage",
+      "icd10_codes": [],
+      "pa_required": false,
+      "documentation_requirements": [],
+      "submission_method": "portal",
+      "typical_turnaround_days": null,
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.uhcprovider.com/content/dam/provider/docs/public/prior-auth/Mohs-Surgery-Policy.pdf",
+      "confidence_score": 0.7
+    },
+    {
+      "cpt_code": "96910",
+      "procedure_name": "Photochemotherapy (Goeckerman/PUVA)",
+      "icd10_codes": [],
+      "pa_required": true,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Confirmed diagnosis requiring phototherapy" },
+        { "item": "Prior treatment history", "required": true, "description": "Documentation of failed topical therapies" },
+        { "item": "Treatment plan", "required": true, "description": "Planned number of sessions and frequency" }
+      ],
+      "submission_method": "portal",
+      "typical_turnaround_days": 7,
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.uhcprovider.com/content/dam/provider/docs/public/prior-auth/phototherapy-policy.pdf",
+      "confidence_score": 0.7
+    },
+    {
+      "cpt_code": "95044",
+      "procedure_name": "Patch or application test(s)",
+      "icd10_codes": [],
+      "pa_required": false,
+      "documentation_requirements": [],
+      "submission_method": "portal",
+      "typical_turnaround_days": null,
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.uhcprovider.com/content/dam/provider/docs/public/prior-auth/allergy-testing-policy.pdf",
+      "confidence_score": 0.7
+    }
+  ]
+}

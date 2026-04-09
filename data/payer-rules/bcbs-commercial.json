@@ -1,77 +1,86 @@
-[
-  {
-    "payer_name": "BCBS",
-    "plan_type": "Commercial",
-    "cpt_code": "J7500",
-    "icd10_code": null,
-    "pa_required": true,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Office visit note with atopic dermatitis diagnosis" },
-      { "item": "BSA assessment", "required": true, "description": "Documented body surface area involvement" },
-      { "item": "Prior treatment history", "required": true, "description": "Failed topical therapy and/or systemic immunosuppressant" },
-      { "item": "Lab results - TB test", "required": true, "description": "TB screening before biologic" }
-    ],
-    "submission_method": "portal",
-    "typical_turnaround_days": 7,
-    "step_therapy_required": true,
-    "step_therapy_details": "Varies by state BCBS plan. Generally requires failure of topical corticosteroids. Some plans also require trial of systemic immunosuppressant.",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.bcbs.com/prior-authorization/biologics-dermatology",
-    "confidence_score": 0.75
-  },
-  {
-    "payer_name": "BCBS",
-    "plan_type": "Commercial",
-    "cpt_code": "J0135",
-    "icd10_code": null,
-    "pa_required": true,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Psoriasis diagnosis with severity assessment" },
-      { "item": "BSA assessment", "required": true, "description": "BSA documentation" },
-      { "item": "Prior treatment history", "required": true, "description": "Failed conventional systemic therapy" },
-      { "item": "Lab results - TB test", "required": true, "description": "TB screening" },
-      { "item": "Lab results - CBC and LFTs", "required": false, "description": "Baseline labs may be required by some plans" }
-    ],
-    "submission_method": "portal",
-    "typical_turnaround_days": 7,
-    "step_therapy_required": true,
-    "step_therapy_details": "Most BCBS plans require trial of methotrexate or phototherapy before biologic approval for psoriasis.",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.bcbs.com/prior-authorization/biologics-psoriasis",
-    "confidence_score": 0.75
-  },
-  {
-    "payer_name": "BCBS",
-    "plan_type": "Commercial",
-    "cpt_code": "17311",
-    "icd10_code": null,
-    "pa_required": false,
-    "documentation_requirements": [],
-    "submission_method": "portal",
-    "typical_turnaround_days": null,
-    "step_therapy_required": false,
-    "step_therapy_details": null,
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.bcbs.com/prior-authorization/surgery-dermatology",
-    "confidence_score": 0.8
-  },
-  {
-    "payer_name": "BCBS",
-    "plan_type": "Commercial",
-    "cpt_code": "96910",
-    "icd10_code": null,
-    "pa_required": true,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Diagnosis requiring phototherapy" },
-      { "item": "Prior treatment history", "required": true, "description": "Failed topical therapy" },
-      { "item": "Treatment plan", "required": true, "description": "Number of sessions and treatment frequency" }
-    ],
-    "submission_method": "portal",
-    "typical_turnaround_days": 5,
-    "step_therapy_required": false,
-    "step_therapy_details": null,
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.bcbs.com/prior-authorization/phototherapy",
-    "confidence_score": 0.75
-  }
-]
+{
+  "version": 2,
+  "payer_name": "BCBS",
+  "plan_type": "Commercial",
+  "drugs": [
+    {
+      "hcpcs_code": "J0517",
+      "drug_name": "Dupixent (dupilumab)",
+      "icd10_codes": [],
+      "pa_required": true,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Office visit note with atopic dermatitis diagnosis" },
+        { "item": "BSA assessment", "required": true, "description": "Documented body surface area involvement" },
+        { "item": "Prior treatment history", "required": true, "description": "Failed topical therapy and/or systemic immunosuppressant" },
+        { "item": "Lab results - TB test", "required": true, "description": "TB screening before biologic" }
+      ],
+      "submission_method": "portal",
+      "typical_turnaround_days": 7,
+      "step_therapy_required": true,
+      "step_therapy_details": {
+        "required_drugs": ["topical corticosteroid"],
+        "duration_days": 90,
+        "exceptions": ["Varies by state BCBS plan; some plans also require trial of systemic immunosuppressant"]
+      },
+      "lab_requirements": { "tb_test": true, "hepatitis_panel": false, "cbc": false, "liver_function": false },
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.bcbs.com/prior-authorization/biologics-dermatology",
+      "confidence_score": 0.7
+    },
+    {
+      "hcpcs_code": "J0139",
+      "drug_name": "Humira (adalimumab)",
+      "icd10_codes": [],
+      "pa_required": true,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Psoriasis diagnosis with severity assessment" },
+        { "item": "BSA assessment", "required": true, "description": "BSA documentation" },
+        { "item": "Prior treatment history", "required": true, "description": "Failed conventional systemic therapy" },
+        { "item": "Lab results - TB test", "required": true, "description": "TB screening" },
+        { "item": "Lab results - CBC and LFTs", "required": false, "description": "Baseline labs may be required by some plans" }
+      ],
+      "submission_method": "portal",
+      "typical_turnaround_days": 7,
+      "step_therapy_required": true,
+      "step_therapy_details": {
+        "required_drugs": ["methotrexate OR phototherapy"],
+        "duration_days": 90,
+        "exceptions": ["Varies by state BCBS plan"]
+      },
+      "lab_requirements": { "tb_test": true, "hepatitis_panel": false, "cbc": true, "liver_function": true },
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.bcbs.com/prior-authorization/biologics-psoriasis",
+      "confidence_score": 0.7
+    }
+  ],
+  "procedures": [
+    {
+      "cpt_code": "17311",
+      "procedure_name": "Mohs micrographic surgery, first stage",
+      "icd10_codes": [],
+      "pa_required": false,
+      "documentation_requirements": [],
+      "submission_method": "portal",
+      "typical_turnaround_days": null,
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.bcbs.com/prior-authorization/surgery-dermatology",
+      "confidence_score": 0.7
+    },
+    {
+      "cpt_code": "96910",
+      "procedure_name": "Photochemotherapy (Goeckerman/PUVA)",
+      "icd10_codes": [],
+      "pa_required": true,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Diagnosis requiring phototherapy" },
+        { "item": "Prior treatment history", "required": true, "description": "Failed topical therapy" },
+        { "item": "Treatment plan", "required": true, "description": "Number of sessions and treatment frequency" }
+      ],
+      "submission_method": "portal",
+      "typical_turnaround_days": 5,
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.bcbs.com/prior-authorization/phototherapy",
+      "confidence_score": 0.7
+    }
+  ]
+}

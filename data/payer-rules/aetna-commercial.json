@@ -1,97 +1,110 @@
-[
-  {
-    "payer_name": "Aetna",
-    "plan_type": "Commercial",
-    "cpt_code": "J7500",
-    "icd10_code": null,
-    "pa_required": true,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Office visit note with atopic dermatitis diagnosis (L20.x)" },
-      { "item": "BSA assessment", "required": true, "description": "Documented BSA involvement showing moderate-to-severe disease" },
-      { "item": "Prior treatment history", "required": true, "description": "Failed at least one topical prescription therapy" },
-      { "item": "Lab results - TB test", "required": true, "description": "TB screening before biologic initiation" }
-    ],
-    "submission_method": "portal",
-    "typical_turnaround_days": 7,
-    "step_therapy_required": true,
-    "step_therapy_details": "Must have tried and failed or have contraindication to at least one medium-to-high potency topical corticosteroid.",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.aetna.com/cpb/medical/data/700_799/0758.html",
-    "confidence_score": 0.85
-  },
-  {
-    "payer_name": "Aetna",
-    "plan_type": "Commercial",
-    "cpt_code": "J7500",
-    "icd10_code": "L20.9",
-    "pa_required": true,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting atopic dermatitis", "required": true, "description": "Confirmed diagnosis of atopic dermatitis L20.9" },
-      { "item": "BSA assessment", "required": true, "description": "BSA showing moderate-to-severe involvement" },
-      { "item": "EASI or IGA score", "required": true, "description": "Validated severity scoring (EASI ≥16 or IGA ≥3)" },
-      { "item": "Prior treatment history", "required": true, "description": "Failed topical corticosteroids" },
-      { "item": "Lab results - TB test", "required": true, "description": "TB screening" }
-    ],
-    "submission_method": "portal",
-    "typical_turnaround_days": 7,
-    "step_therapy_required": true,
-    "step_therapy_details": "Must have tried and failed or have contraindication to topical corticosteroids. EASI score ≥16 or IGA ≥3 required for approval.",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.aetna.com/cpb/medical/data/700_799/0758.html",
-    "confidence_score": 0.9
-  },
-  {
-    "payer_name": "Aetna",
-    "plan_type": "Commercial",
-    "cpt_code": "J0135",
-    "icd10_code": null,
-    "pa_required": true,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Office visit note confirming psoriasis diagnosis" },
-      { "item": "BSA assessment", "required": true, "description": "BSA ≥10% or involvement of face/hands/feet/genitalia" },
-      { "item": "Prior treatment history", "required": true, "description": "Failed phototherapy or systemic therapy" },
-      { "item": "Lab results - TB test", "required": true, "description": "TB screening" }
-    ],
-    "submission_method": "portal",
-    "typical_turnaround_days": 7,
-    "step_therapy_required": true,
-    "step_therapy_details": "Must have tried phototherapy or one conventional systemic agent (methotrexate, cyclosporine, or acitretin).",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.aetna.com/cpb/medical/data/600_699/0621.html",
-    "confidence_score": 0.85
-  },
-  {
-    "payer_name": "Aetna",
-    "plan_type": "Commercial",
-    "cpt_code": "17311",
-    "icd10_code": null,
-    "pa_required": false,
-    "documentation_requirements": [],
-    "submission_method": "portal",
-    "typical_turnaround_days": null,
-    "step_therapy_required": false,
-    "step_therapy_details": null,
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.aetna.com/cpb/medical/data/100_199/0185.html",
-    "confidence_score": 0.8
-  },
-  {
-    "payer_name": "Aetna",
-    "plan_type": "Commercial",
-    "cpt_code": "96910",
-    "icd10_code": null,
-    "pa_required": true,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Diagnosis requiring phototherapy (psoriasis, vitiligo, eczema)" },
-      { "item": "Prior treatment history", "required": true, "description": "Failed topical therapy" },
-      { "item": "Treatment plan", "required": true, "description": "Frequency and duration of planned phototherapy course" }
-    ],
-    "submission_method": "portal",
-    "typical_turnaround_days": 5,
-    "step_therapy_required": true,
-    "step_therapy_details": "Must have tried topical therapy before phototherapy for most diagnoses.",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.aetna.com/cpb/medical/data/200_299/0263.html",
-    "confidence_score": 0.8
-  }
-]
+{
+  "version": 2,
+  "payer_name": "Aetna",
+  "plan_type": "Commercial",
+  "drugs": [
+    {
+      "hcpcs_code": "J0517",
+      "drug_name": "Dupixent (dupilumab)",
+      "icd10_codes": [],
+      "pa_required": true,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Office visit note with atopic dermatitis diagnosis (L20.x)" },
+        { "item": "BSA assessment", "required": true, "description": "Documented BSA involvement showing moderate-to-severe disease" },
+        { "item": "Prior treatment history", "required": true, "description": "Failed at least one topical prescription therapy" },
+        { "item": "Lab results - TB test", "required": true, "description": "TB screening before biologic initiation" }
+      ],
+      "submission_method": "portal",
+      "typical_turnaround_days": 7,
+      "step_therapy_required": true,
+      "step_therapy_details": {
+        "required_drugs": ["medium-to-high potency topical corticosteroid"],
+        "duration_days": 90,
+        "exceptions": ["Documented contraindication to topical corticosteroids"]
+      },
+      "lab_requirements": { "tb_test": true, "hepatitis_panel": false, "cbc": false, "liver_function": false },
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.aetna.com/cpb/medical/data/700_799/0758.html",
+      "confidence_score": 0.7
+    },
+    {
+      "hcpcs_code": "J0517",
+      "drug_name": "Dupixent (dupilumab)",
+      "icd10_codes": ["L20.9"],
+      "pa_required": true,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting atopic dermatitis", "required": true, "description": "Confirmed diagnosis of atopic dermatitis L20.9" },
+        { "item": "BSA assessment", "required": true, "description": "BSA showing moderate-to-severe involvement" },
+        { "item": "EASI or IGA score", "required": true, "description": "Validated severity scoring (EASI >=16 or IGA >=3)" },
+        { "item": "Prior treatment history", "required": true, "description": "Failed topical corticosteroids" },
+        { "item": "Lab results - TB test", "required": true, "description": "TB screening" }
+      ],
+      "submission_method": "portal",
+      "typical_turnaround_days": 7,
+      "step_therapy_required": true,
+      "step_therapy_details": {
+        "required_drugs": ["topical corticosteroid"],
+        "duration_days": 90,
+        "exceptions": ["Documented contraindication to topical corticosteroids", "EASI score >=16 or IGA >=3 required for approval"]
+      },
+      "lab_requirements": { "tb_test": true, "hepatitis_panel": false, "cbc": false, "liver_function": false },
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.aetna.com/cpb/medical/data/700_799/0758.html",
+      "confidence_score": 0.7
+    },
+    {
+      "hcpcs_code": "J0139",
+      "drug_name": "Humira (adalimumab)",
+      "icd10_codes": [],
+      "pa_required": true,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Office visit note confirming psoriasis diagnosis" },
+        { "item": "BSA assessment", "required": true, "description": "BSA >=10% or involvement of face/hands/feet/genitalia" },
+        { "item": "Prior treatment history", "required": true, "description": "Failed phototherapy or systemic therapy" },
+        { "item": "Lab results - TB test", "required": true, "description": "TB screening" }
+      ],
+      "submission_method": "portal",
+      "typical_turnaround_days": 7,
+      "step_therapy_required": true,
+      "step_therapy_details": {
+        "required_drugs": ["phototherapy OR methotrexate OR cyclosporine OR acitretin"],
+        "duration_days": 90,
+        "exceptions": ["Documented contraindication to conventional systemic agents"]
+      },
+      "lab_requirements": { "tb_test": true, "hepatitis_panel": false, "cbc": false, "liver_function": false },
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.aetna.com/cpb/medical/data/600_699/0621.html",
+      "confidence_score": 0.7
+    }
+  ],
+  "procedures": [
+    {
+      "cpt_code": "17311",
+      "procedure_name": "Mohs micrographic surgery, first stage",
+      "icd10_codes": [],
+      "pa_required": false,
+      "documentation_requirements": [],
+      "submission_method": "portal",
+      "typical_turnaround_days": null,
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.aetna.com/cpb/medical/data/100_199/0185.html",
+      "confidence_score": 0.7
+    },
+    {
+      "cpt_code": "96910",
+      "procedure_name": "Photochemotherapy (Goeckerman/PUVA)",
+      "icd10_codes": [],
+      "pa_required": true,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Diagnosis requiring phototherapy (psoriasis, vitiligo, eczema)" },
+        { "item": "Prior treatment history", "required": true, "description": "Failed topical therapy" },
+        { "item": "Treatment plan", "required": true, "description": "Frequency and duration of planned phototherapy course" }
+      ],
+      "submission_method": "portal",
+      "typical_turnaround_days": 5,
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.aetna.com/cpb/medical/data/200_299/0263.html",
+      "confidence_score": 0.7
+    }
+  ]
+}
