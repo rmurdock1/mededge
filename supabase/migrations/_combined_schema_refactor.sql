@@ -335,12 +335,20 @@ COMMENT ON TABLE rule_audit_log IS
 -- Reads context from session GUCs. Falls back to NULL/'manual' if the app
 -- forgot to set them — better to log an incomplete audit row than to fail
 -- the underlying mutation.
+--
+-- TODO (Sprint 6 or 7): flip to strict mode. Once every writer (admin
+-- dashboard, seed scripts, Policy Watch) reliably sets app.audit_source,
+-- this function should RAISE EXCEPTION when the GUC is missing instead
+-- of silently defaulting to 'manual'. The RAISE NOTICE warnings emitted
+-- below give us visibility into which call sites still need to be fixed
+-- before we can turn strict mode on.
 CREATE OR REPLACE FUNCTION rule_audit_capture()
 RETURNS TRIGGER AS $$
 DECLARE
   v_actor uuid;
   v_reason text;
   v_source audit_source;
+  v_source_raw text;
   v_action audit_action;
   v_before jsonb;
   v_after jsonb;
@@ -356,11 +364,20 @@ BEGIN
 
   v_reason := nullif(current_setting('app.change_reason', true), '');
 
+  v_source_raw := nullif(current_setting('app.audit_source', true), '');
   BEGIN
-    v_source := nullif(current_setting('app.audit_source', true), '')::audit_source;
+    v_source := v_source_raw::audit_source;
   EXCEPTION WHEN OTHERS THEN v_source := NULL;
   END;
+
+  -- Fallback path: emit a NOTICE so we can see in the Postgres logs which
+  -- writers still need to be retrofitted to set the audit context. Do NOT
+  -- raise — the cost of a missing GUC is a less informative audit entry,
+  -- not data loss, and failing the underlying mutation would be worse.
   IF v_source IS NULL THEN
+    RAISE NOTICE
+      'rule_audit_capture: app.audit_source not set on % of %; falling back to manual. actor=% reason=%',
+      TG_OP, TG_TABLE_NAME, v_actor, v_reason;
     v_source := 'manual';
   END IF;
 
@@ -446,10 +463,25 @@ CREATE TRIGGER payer_rules_procedure_audit
 -- the payer_rules name with a VIEW unioning the two new tables.
 --
 -- Migration heuristic: rules where cpt_code starts with 'J' are drugs
--- (HCPCS J-codes); everything else is a procedure (CPT). This holds for
--- the current 25 seed rules but is best-effort — the 'seed' audit_source
--- and confidence_score = 0.5 mark every migrated row for re-verification
--- in Sprint 5.
+-- (HCPCS J-codes); everything else is a procedure (CPT).
+--
+-- KNOWN LIMITATIONS of this heuristic (accepted because this is a one-time
+-- migration bounded by Sprint 5 reclassification):
+--   * S-codes (e.g. S0145 pegylated interferon) also represent drugs but
+--     would be routed to payer_rules_procedure by this rule.
+--   * Q-codes (e.g. Q5121 Avsola infliximab biosimilar) also represent
+--     drugs and would likewise be misrouted.
+--   * NDC-identified drugs without an HCPCS equivalent cannot be matched
+--     at all — the legacy table had no NDC column.
+--
+-- Why we accepted this: the current 25 seed rules contain zero S-codes,
+-- zero Q-codes, and zero NDC-only rules — every drug in the seed set is
+-- a J-code. Dermatology biologics rarely appear as S/Q codes in practice.
+-- Sprint 5 performs a human-reviewed rewrite of every rule anyway, so any
+-- misclassification produced by this migration is guaranteed to be caught
+-- and corrected before the rules go back into production use. Every
+-- migrated row is marked with audit_source='seed' and confidence_score=0.5
+-- so the UI flags them for review even before Sprint 5 lands.
 
 -- ---------------------------------------------------------------------------
 -- 1. Rename old table out of the way (preserves data, drops nothing)
