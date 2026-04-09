@@ -4,6 +4,22 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 
 ## Current Sprint
 
+**Sprint 4: Admin Dashboard** (branch: `feat/admin-dashboard`)
+- [x] 6 SECURITY DEFINER RPCs for rule CRUD + soft-delete/restore (migration `20260409000002`)
+- [x] Zod validation schemas with actionable error messages and `.strict()` on all JSONB shapes
+- [x] Server actions: `upsertDrugRule`, `softDeleteDrugRule`, `restoreDrugRule`, `upsertProcedureRule`, `softDeleteProcedureRule`, `restoreProcedureRule`
+- [x] Admin layout with `notFound()` guard for non-super_admin
+- [x] Admin overview page: confidence tier breakdown, stale rules count, recent audit activity
+- [x] Drug rules list: filterable by payer/plan, show-deleted toggle, soft-delete/restore with reason input
+- [x] Procedure rules list: same pattern
+- [x] Drug rule form: full CRUD with JSONB textarea editing, two-phase validation (JSON.parse then Zod)
+- [x] Procedure rule form: same pattern with procedure-specific JSONB fields
+- [x] Audit log browser: paginated, filterable by source/action enum dropdowns
+- [x] Reusable components: `JsonTextarea`, `ConfidenceBadge`, `RuleActionsMenu`
+- [x] 58 new unit tests (53 Zod schema + 5 confidence-badge)
+- [ ] Integration tests for RPCs via Supabase branch DB (deferred to Sprint 5, tracked)
+- [x] Side-nav updated with Admin link for super_admin role
+
 **Sprint 3: Rule Schema Refactor** (merged in PR #2 + #4, applied to hosted DB)
 - [x] Split `payer_rules` → `payer_rules_drug` + `payer_rules_procedure`
 - [x] Add `rule_audit_log` (immutable, super_admin only) + capture triggers
@@ -45,6 +61,77 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 ---
 
 ## Session Log
+
+## Session 2026-04-09 (Sprint 4)
+
+### Goal
+Build the super_admin admin dashboard: CRUD for drug and procedure rules, audit log browser, confidence tier overview, with Zod-validated forms and server actions calling SECURITY DEFINER RPCs.
+
+### Completed
+- Applied admin RPCs migration (`20260409000002_admin_rpcs.sql`) to hosted Supabase via MCP
+  - 6 RPCs: `admin_upsert_drug_rule`, `admin_upsert_procedure_rule`, `admin_soft_delete_drug_rule`, `admin_soft_delete_procedure_rule`, `admin_restore_drug_rule`, `admin_restore_procedure_rule`
+  - Helper: `_set_audit_context()` for session GUC propagation
+  - All pinned `search_path = pg_catalog, public`, granted to `authenticated` only
+- Built full Zod validation layer (`src/lib/admin/schemas.ts`):
+  - 8 JSONB sub-schemas with `.strict()` and actionable error messages
+  - 2 form-level schemas (`drugRuleFormSchema`, `procedureRuleFormSchema`)
+  - `parseJsonField()` helper for two-phase textarea validation
+  - Static enum arrays for BCBS licensees, submission methods, plan types, audit sources/actions, site-of-service options
+- Built server actions (`src/lib/admin/actions.ts`): 6 mutations with `requireSuperAdmin()` guard, Zod validation, RPC calls
+- Built admin layout (`src/app/(admin)/layout.tsx`): `notFound()` guard, sidebar with 4 nav links
+- Built 8 admin pages:
+  - Overview: parallel Supabase queries for confidence tiers, stale rules, recent audit
+  - Drug rules: list (filterable, show-deleted toggle), new, edit
+  - Procedure rules: list, new, edit
+  - Audit log: paginated, enum-backed filter dropdowns
+- Built 6 reusable components: `JsonTextarea`, `ConfidenceBadge`, `RuleActionsMenu`, `DrugRuleListActions`, `ProcedureRuleListActions`, `DrugRuleForm`, `ProcedureRuleForm`
+- Added Admin link to side-nav for super_admin role
+- 58 new tests (53 schema + 5 confidence-badge), total suite: 93 passing
+- Lint clean, TypeScript clean
+
+### Decisions Made
+- **Server actions over API routes for mutations.** Reason: Next.js App Router convention, co-locates mutation logic with the UI, avoids extra endpoint surface. The `"use server"` directive + Zod validation at the action boundary gives us the same input validation an API route would.
+- **`notFound()` instead of redirect/403 for unauthorized admin access.** Reason: avoids leaking the existence of admin routes to non-super_admin users. A 404 is indistinguishable from a non-existent route.
+- **JSONB editing via `<textarea>` with two-phase validation** (JSON.parse then Zod) rather than structured form builders. Reason: JSONB schemas are complex and varied; structured builders would require one form per schema variant. Textarea with Format JSON button and clear Zod errors gives power users full control without massive UI code. Monospace, 18 rows.
+- **Static enum arrays instead of DB queries for filter dropdowns.** Reason: these are Postgres ENUMs that change via migrations, not user data. Querying the DB for them adds latency and complexity for no benefit. Keep them in sync manually when migrations add values.
+- **`Parameters<typeof action>[0]` cast at form call sites** rather than widening action parameter types. Reason: the `<select>` elements guarantee valid enum values, and the server action validates with Zod anyway. The TypeScript mismatch is just `string` vs specific enum union — a compile-time-only concern that Zod catches at runtime.
+- **Deferred RPC integration tests to Sprint 5.** Real-DB integration tests via `supabase create_branch` are the right approach but need test infra work (vitest project config, CI secrets, branch cleanup). Committed to doing this in Sprint 5 with a named task.
+
+### Files Added
+- `supabase/migrations/20260409000002_admin_rpcs.sql`
+- `src/lib/admin/schemas.ts`
+- `src/lib/admin/schemas.test.ts`
+- `src/lib/admin/actions.ts`
+- `src/app/(admin)/layout.tsx`
+- `src/app/(admin)/admin/page.tsx`
+- `src/app/(admin)/admin/rules/drug/page.tsx`
+- `src/app/(admin)/admin/rules/drug/new/page.tsx`
+- `src/app/(admin)/admin/rules/drug/[id]/page.tsx`
+- `src/app/(admin)/admin/rules/procedure/page.tsx`
+- `src/app/(admin)/admin/rules/procedure/new/page.tsx`
+- `src/app/(admin)/admin/rules/procedure/[id]/page.tsx`
+- `src/app/(admin)/admin/audit/page.tsx`
+- `src/components/admin/json-textarea.tsx`
+- `src/components/admin/confidence-badge.tsx`
+- `src/components/admin/confidence-badge.test.ts`
+- `src/components/admin/rule-actions-menu.tsx`
+- `src/components/admin/drug-rule-list-actions.tsx`
+- `src/components/admin/procedure-rule-list-actions.tsx`
+- `src/components/admin/drug-rule-form.tsx`
+- `src/components/admin/procedure-rule-form.tsx`
+
+### Files Modified
+- `src/components/layout/side-nav.tsx` (added Admin link for super_admin)
+- `docs/PROGRESS.md` (this file)
+
+### Open Questions
+- RPC integration tests deferred to Sprint 5. Need to set up `vitest.config.integration.ts`, `test:integration` npm script, and Supabase branch provisioning in CI.
+
+### Next Steps
+1. Sprint 5: Fix 25 broken seed rules (per-payer PRs), add real-DB RPC integration tests
+2. Sprint 6: Rewrite `checkPARequired` against typed tables, drop compat view
+
+---
 
 ## Session 2026-04-09
 
@@ -256,9 +343,9 @@ Track when we've identified a need for human expertise and whether it's been add
 
 ## Repo Health
 
-- **Last lint check**: 2026-04-08 (clean)
-- **Last build**: 2026-04-08 (clean, Next.js 16.2.2 Turbopack)
-- **Test coverage**: 35 tests passing across 5 files
-- **Open branches**: `feat/schema-refactor` (PR #2)
-- **Merged PRs**: #1 (Sprint 1+2 foundation)
-- **Supabase migrations**: 18 files (11 from Sprint 1+2, 7 from Sprint 3 — Sprint 3 batch not yet applied to remote)
+- **Last lint check**: 2026-04-09 (clean)
+- **Last typecheck**: 2026-04-09 (clean)
+- **Test coverage**: 93 tests passing across 7 files
+- **Open branches**: `feat/admin-dashboard` (Sprint 4 PR pending)
+- **Merged PRs**: #1 (Sprint 1+2), #2 (Sprint 3), #3 (Supabase MCP), #4 (Sprint 3 fixup), #5 (Sprint 3 hardening)
+- **Supabase migrations**: 20 files (11 Sprint 1+2, 7 Sprint 3, 1 hardening, 1 admin RPCs) — all applied to hosted DB
