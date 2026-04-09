@@ -54,6 +54,8 @@ IMPORTANT: Before starting any task, check if a relevant doc exists below. Read 
 - Testing strategy: @docs/agent/testing.md
 - Revenue Opportunity Radar: @docs/agent/revenue-radar.md
 - Auto-appeal engine: @docs/agent/auto-appeal.md
+- Policy Watch (AI rule extraction): @docs/agent/policy-watch.md
+- Rule schema (v2): @docs/agent/rule-schema.md
 
 ## Code Conventions
 

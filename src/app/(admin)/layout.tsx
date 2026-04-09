@@ -6,6 +6,7 @@ const adminNavItems = [
   { label: "Overview", href: "/admin" },
   { label: "Drug Rules", href: "/admin/rules/drug" },
   { label: "Procedure Rules", href: "/admin/rules/procedure" },
+  { label: "Policy Watch", href: "/admin/policy-watch" },
   { label: "Audit Log", href: "/admin/audit" },
 ];
 
