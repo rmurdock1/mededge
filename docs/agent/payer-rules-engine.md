@@ -62,16 +62,21 @@ Sources for manual curation:
 
 ```typescript
 async function checkPARequired(
+  supabase: SupabaseClient,
   payerName: string,
   planType: string,
-  cptCodes: string[],
-  icd10Codes?: string[]
-): Promise<PARequirement[]> {
-  // Query payer_rules for each CPT code
-  // Match on: payer_name, plan_type, cpt_code
-  // If icd10_code is specified in the rule, also match on diagnosis
-  // Return all matching rules with documentation requirements
-  // If no rule found, return { pa_required: "unknown", confidence: 0 }
+  codes: string[],           // HCPCS J-codes or CPT codes, mixed OK
+  icd10Codes?: string[],
+  codeKindHint?: CodeKind    // optional override for classification
+): Promise<PALookupResult[]> {
+  // 1. Classify each code as "drug" (HCPCS) or "procedure" (CPT) via classifyCode()
+  // 2. Drug codes → query payer_rules_drug (by hcpcs_code)
+  //    Procedure codes → query payer_rules_procedure (by cpt_code)
+  // 3. Both queries filter deleted_at IS NULL (soft-deleted rules excluded)
+  // 4. If ICD-10 codes provided, prefer rules whose icd10_codes array
+  //    overlaps the patient's diagnoses; fall back to generic rules
+  // 5. Return discriminated union: kind="drug" | "procedure" | "unknown"
+  // 6. If no rule found, return kind="unknown" with confidence=0
 }
 ```
 
@@ -116,12 +121,12 @@ This checklist is presented to staff in the UI. They check off items as they gat
 
 ```
 src/lib/payer-rules/
-  lookup.ts          # Core PA requirement lookup function
-  types.ts           # PARequirement, DocumentationItem types
-  checklist.ts       # Checklist generation and completion tracking
-  seed.ts            # Initial data seeding script
+  lookup.ts          # Core PA lookup — queries payer_rules_drug + payer_rules_procedure
+  types.ts           # PALookupResult discriminated union, LookupMiss, CodeKind
+  code-utils.ts      # classifyCode() — HCPCS vs CPT heuristic
+  checklist.ts       # Checklist generation from PALookupResult[]
 
-data/payer-rules/
+data/payer-rules/     # v2 JSON reference files (drugs[] + procedures[])
   uhc-commercial.json
   aetna-commercial.json
   bcbs-commercial.json

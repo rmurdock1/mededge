@@ -110,23 +110,18 @@ $$;
 
 The Sprint 4 admin dashboard will follow the same pattern with `admin_upsert_drug_rule(p_payload, p_actor_user_id, p_change_reason, ...)` etc. The TypeScript helper `src/lib/audit-context.ts` exports the canonical `AuditContext` type and `toRpcAuditParams()` so callers stay consistent.
 
-## Compatibility view: `payer_rules`
+## Compatibility view: `payer_rules` (DROPPED in Sprint 6)
 
-The original `payer_rules` table was renamed to `payer_rules_legacy_v1` (data preserved, frozen). A view named `payer_rules` was created to take its place, so the existing `checkPARequired()` function and its tests keep working until Sprint 6 rewrites them against the typed tables.
+The Sprint 3 compatibility view named `payer_rules` was **dropped** in Sprint 6
+(`20260411000001_drop_compat_view.sql`). The view, its three INSTEAD OF triggers,
+and the `payer_rules_view_block_write()` function no longer exist.
 
-### Documented lossiness
+`checkPARequired()` now queries `payer_rules_drug` and `payer_rules_procedure`
+directly. Code classification (HCPCS vs CPT) is handled by `classifyCode()` in
+`src/lib/payer-rules/code-utils.ts`.
 
-This view is **not** a long-term API. It has known limitations:
-
-1. **ICD-10 array → multiple rows**: v2 uses `icd10_codes text[]` but the view exposes a single `icd10_code` column by `unnest()`-ing the array. A v2 rule with three ICD-10 codes appears as three rows in the view. Empty arrays appear as one row with `icd10_code = NULL`.
-
-2. **`step_therapy_details` becomes opaque**: v2 stores structured jsonb. The view stringifies it via `->> 'legacy_text'` (which the migration sets) or `#>> '{}'` fallback. New structured fields like `required_drugs` are not visible to readers of the view.
-
-3. **Procedure rules expose stub step-therapy fields**: To match the v1 column shape, procedure rules show `step_therapy_required = false` and `step_therapy_details = NULL` regardless of their actual contents. Procedures don't really have step therapy in v2, so this is correct in spirit but not introspectable.
-
-4. **Writes are blocked**: INSTEAD OF triggers reject any INSERT/UPDATE/DELETE against `payer_rules` with a clear error directing the writer to use the typed tables. Bulk seed scripts and the admin dashboard must target `payer_rules_drug` or `payer_rules_procedure` directly.
-
-These limitations are tracked in `docs/PROGRESS.md` under Known Issues with severity **Medium — sprint-bounded**, resolution **Sprint 6**.
+The frozen legacy table `payer_rules_legacy_v1` is intentionally kept for audit
+trail and rollback reference.
 
 ## RLS model
 
@@ -137,9 +132,10 @@ These limitations are tracked in `docs/PROGRESS.md` under Known Issues with seve
 | `rule_audit_log` | super_admin only | none — triggers handle inserts, updates/deletes blocked at the trigger layer |
 | `payer_rules` (view) | granted to `authenticated` role; no anon access | blocked by INSTEAD OF triggers |
 
-## What's NOT in this sprint
+## Sprint history
 
-- **Fixing the 25 broken seed rules** → Sprint 5. The migration moved them as-is into the new tables with `confidence_score = 0.5` so they show as unverified.
-- **Rewriting `checkPARequired`** → Sprint 6. The function still reads the compat view today.
-- **Admin dashboard** → Sprint 4 (next branch).
+- **Sprint 3**: Schema split, compat view, audit log, admin RLS
+- **Sprint 4**: Admin dashboard, typed CRUD RPCs, Zod validation
+- **Sprint 5**: Corrected 25 seed rules, integration tests for admin RPCs
+- **Sprint 6**: Rewrote `checkPARequired()` against typed tables, dropped compat view, discriminated union return type, code classifier
 - **Policy Watch** → Sprint 7-8. The `audit_source = 'policy_watch'` enum value and `source_document_excerpt` columns exist now so Policy Watch can land without another migration.

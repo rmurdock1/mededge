@@ -4,7 +4,19 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 
 ## Current Sprint
 
-**Sprint 5: Seed Rule Corrections + Integration Tests** (branch: `feat/sprint-5`)
+**Sprint 6: Rewrite checkPARequired + Drop Compat View** (branch: `feat/sprint-6`)
+- [x] New `PALookupResult` discriminated union type (kind: "drug" | "procedure" | "unknown")
+- [x] `classifyCode()` — HCPCS vs CPT syntactic classifier with hint override
+- [x] Rewrote `checkPARequired()` to query `payer_rules_drug` and `payer_rules_procedure` directly
+- [x] Rewrote `getStaleRules()` to query both typed tables in parallel
+- [x] Updated `generateChecklist()` to accept `PALookupResult[]`
+- [x] Migration to drop compat view, INSTEAD OF triggers, and block-write function
+- [x] Removed deprecated `PayerRule` type from `src/lib/types.ts`
+- [x] Deprecated seed script (replaced with stub + deprecation notice)
+- [x] 6 new tests (code-utils), 12 rewritten tests (lookup + stale rules), 10 updated tests (checklist)
+- [x] Updated docs: payer-rules-engine.md, rule-schema.md, PROGRESS.md
+
+**Sprint 5: Seed Rule Corrections + Integration Tests** (merged in PR #7)
 - [x] Integration test infrastructure: `vitest.config.integration.ts`, `test:integration` script, setup/teardown with idempotent test user
 - [x] 12 real-DB integration tests across 6 test files covering all 6 admin RPCs
   - Insert, update, soft-delete, restore, role guard, change_reason guard
@@ -75,6 +87,82 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 ---
 
 ## Session Log
+
+## Session 2026-04-09 (Sprint 6)
+
+### Goal
+Rewrite `checkPARequired()` against the typed tables (`payer_rules_drug`, `payer_rules_procedure`), drop the compatibility view, and introduce a discriminated union return type.
+
+### Completed
+- **Layer 1 — New types** (`src/lib/payer-rules/types.ts`):
+  - `PALookupResult` discriminated union: `PALookupResultDrug | PALookupResultProcedure | PALookupResultUnknown`
+  - Shared base interface with code, payer_name, plan_type, pa_required, confidence, documentation_requirements, appeals_pathway, etc.
+  - Drug variant adds: drug_name, hcpcs_code, ndc_code, step_therapy_required/details, lab_requirements
+  - Procedure variant adds: procedure_name, cpt_code, site_of_service_restrictions, modifier_requirements, units_or_frequency_limits
+  - Unknown variant constrains: `pa_required: "unknown"`, `confidence: 0`
+  - Updated `LookupMiss` to use `code` + `code_kind` instead of `cpt_code`
+  - Removed deprecated `PARequirement` interface (no consumers remained)
+
+- **Layer 2 — Code classifier** (`src/lib/payer-rules/code-utils.ts`):
+  - `classifyCode(code, hint?)` — returns `"drug"` for HCPCS Level II pattern (`/^[A-Z]\d{4}$/i`), `"procedure"` for everything else
+  - Optional `hint` parameter short-circuits the heuristic for callers who already know
+  - 6 tests covering J-codes, Q-codes, S-codes, CPT codes, case insensitivity, edge cases, and hint override
+
+- **Layer 3 — Lookup rewrite** (`src/lib/payer-rules/lookup.ts`):
+  - `checkPARequired()` now auto-classifies each code and queries the correct typed table
+  - New `codeKindHint` parameter for callers who want to override classification
+  - Drug query: `.from("payer_rules_drug").eq("hcpcs_code", code.toUpperCase()).is("deleted_at", null)`
+  - Procedure query: `.from("payer_rules_procedure").eq("cpt_code", code).is("deleted_at", null)`
+  - `pickBestMatch()` — ICD-10 array overlap matching with confidence-score tiebreaking
+  - `getStaleRules()` — queries both tables in parallel via `Promise.all`, returns unified list with `table` discriminator
+  - 12 tests: drug match, procedure match, unknown, DB error, mixed codes, ICD-10 preference, fallback to generic, hint override, soft-delete filtering, stale rules
+
+- **Layer 4 — Checklist update** (`src/lib/payer-rules/checklist.ts`):
+  - `generateChecklist()` now accepts `PALookupResult[]` instead of `PARequirement[]`
+  - No logic changes needed — it already only reads `pa_required` and `documentation_requirements`, which are on the base interface
+  - All 10 checklist tests updated to use `PALookupResultDrug` / `PALookupResultUnknown` fixtures
+
+- **Layer 5 — Drop compat view** (`supabase/migrations/20260411000001_drop_compat_view.sql`):
+  - Drops 3 INSTEAD OF triggers, the `payer_rules` VIEW, and `payer_rules_view_block_write()` function
+  - Keeps `payer_rules_legacy_v1` frozen table for audit trail
+
+- **Layer 6 — Cleanup**:
+  - Removed deprecated `PayerRule` interface from `src/lib/types.ts` (no imports existed)
+  - Replaced `scripts/seed-payer-rules.ts` with a deprecation stub
+  - Updated `docs/agent/payer-rules-engine.md` (lookup logic, code structure)
+  - Updated `docs/agent/rule-schema.md` (compat view section → "DROPPED in Sprint 6", sprint history)
+
+### Decisions Made
+- **Discriminated union over generics or class hierarchy.** The `kind` field lets consumers narrow with a simple `if (result.kind === "drug")` check. No type assertions needed. The shared base keeps the checklist module working unchanged.
+- **Syntactic code classification, not DB-backed.** HCPCS Level II codes follow a rigid `[A-Z]\d{4}` pattern that doesn't change. A DB lookup for code classification would add latency on every PA check for no practical benefit. The `hint` parameter covers edge cases.
+- **`any` types in `pickBestMatch`.** The Supabase client without generated types returns untyped rows. Rather than casting or generating types just for this function, the `any` is explicitly suppressed with eslint-disable comments. The runtime DB response is the source of truth.
+- **Parallel `Promise.all` in `getStaleRules()`.** Drug and procedure stale-rule queries are independent — running them in parallel halves latency.
+- **Keep `payer_rules_legacy_v1`** even though the compat view is dropped. The frozen table has audit value and costs nothing.
+
+### Files Added
+- `src/lib/payer-rules/code-utils.ts`
+- `src/lib/payer-rules/code-utils.test.ts`
+- `supabase/migrations/20260411000001_drop_compat_view.sql`
+
+### Files Modified
+- `src/lib/payer-rules/types.ts` (complete rewrite — discriminated union)
+- `src/lib/payer-rules/lookup.ts` (complete rewrite — typed table queries)
+- `src/lib/payer-rules/lookup.test.ts` (complete rewrite — new mock pattern + fixtures)
+- `src/lib/payer-rules/checklist.ts` (updated to accept PALookupResult[])
+- `src/lib/payer-rules/checklist.test.ts` (updated fixtures to PALookupResult types)
+- `src/lib/types.ts` (removed deprecated PayerRule interface)
+- `scripts/seed-payer-rules.ts` (replaced with deprecation stub)
+- `docs/agent/payer-rules-engine.md` (updated lookup logic + code structure sections)
+- `docs/agent/rule-schema.md` (compat view → DROPPED, sprint history added)
+- `docs/PROGRESS.md` (this file)
+
+### Next Steps
+1. Apply the drop-compat-view migration to hosted Supabase
+2. Sprint 7: Policy Watch — scraper for payer coverage PDFs → auto-populate rules
+3. ModMed sandbox integration prep
+4. Revenue Radar data pipeline
+
+---
 
 ## Session 2026-04-09 (Sprint 5)
 
@@ -395,9 +483,9 @@ Significant technical decisions get documented here with context so future devel
 
 | Issue | Severity | Status | Notes |
 |-------|----------|--------|-------|
-| `payer_rules` view has lossy ICD-10 and step_therapy_details mapping | Medium — sprint-bounded | Accepted, resolved in Sprint 6 when checkPARequired is rewritten | The compat shim unnest()s `icd10_codes text[]` into multiple rows and stringifies structured `step_therapy_details` jsonb. Documented in `docs/agent/rule-schema.md` and the view's SQL comment. New code MUST read the typed tables directly. |
+| `payer_rules` compat view had lossy mapping | ~~Medium~~ | **Resolved** | View dropped in Sprint 6 (`20260411000001`). `checkPARequired()` now queries typed tables directly. |
 | 25 seed rules corrected in Sprint 5 | ~~High~~ | **Resolved** | All 25 rules updated with correct HCPCS codes, real names, structured JSONB, confidence 0.7. Migration `20260410000001`. |
-| Seed script (`db:seed`) non-functional | Low | Deferred to Sprint 6 | The `payer_rules` compat VIEW blocks writes. Script marked with TODO. |
+| Seed script (`db:seed`) deprecated | ~~Low~~ | **Resolved** | Script replaced with deprecation stub in Sprint 6. Rules managed via SQL migrations + admin RPCs. |
 | Integration test artifacts in hosted DB | Low | Accepted | TestPayer rows can't be deleted due to immutable audit log FK constraints. Harmless; use branch DBs in CI. |
 
 ---
@@ -422,8 +510,8 @@ Track when we've identified a need for human expertise and whether it's been add
 
 - **Last lint check**: 2026-04-09 (clean)
 - **Last typecheck**: 2026-04-09 (clean)
-- **Unit tests**: 93 passing across 7 files
+- **Unit tests**: 105 passing across 8 files
 - **Integration tests**: 12 passing across 6 files (real-DB, run via `npm run test:integration`)
-- **Open branches**: `feat/sprint-5` (PR pending)
-- **Merged PRs**: #1 (Sprint 1+2), #2 (Sprint 3), #3 (Supabase MCP), #4 (Sprint 3 fixup), #5 (Sprint 3 hardening), #6 (Sprint 4)
-- **Supabase migrations**: 21 files — all applied to hosted DB
+- **Open branches**: `feat/sprint-6` (PR pending)
+- **Merged PRs**: #1 (Sprint 1+2), #2 (Sprint 3), #3 (Supabase MCP), #4 (Sprint 3 fixup), #5 (Sprint 3 hardening), #6 (Sprint 4), #7 (Sprint 5)
+- **Supabase migrations**: 22 files — 21 applied to hosted DB, 1 pending (`20260411000001`)
