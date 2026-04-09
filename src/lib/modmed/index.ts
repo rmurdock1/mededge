@@ -38,6 +38,17 @@ export { mapAppointment } from "./mappers/appointment";
 export { mapCoverage, pickPrimaryCoverage, normalizePayerName } from "./mappers/coverage";
 export { mapPractitioner } from "./mappers/practitioner";
 
+// Sync
+export { runSync } from "./sync";
+export type { SyncResult, SyncError } from "./sync";
+
+// PA Detection
+export { runPADetection } from "./pa-detection";
+export type { PADetectionResult } from "./pa-detection";
+
+// DB-backed circuit breaker store
+export { SupabaseCircuitBreakerStore } from "./circuit-breaker-db-store";
+
 // Types
 export type {
   ModMedClientConfig,

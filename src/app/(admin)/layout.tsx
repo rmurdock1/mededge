@@ -7,6 +7,7 @@ const adminNavItems = [
   { label: "Drug Rules", href: "/admin/rules/drug" },
   { label: "Procedure Rules", href: "/admin/rules/procedure" },
   { label: "Policy Watch", href: "/admin/policy-watch" },
+  { label: "ModMed Sync", href: "/admin/modmed-sync" },
   { label: "Audit Log", href: "/admin/audit" },
 ];
 
