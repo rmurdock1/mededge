@@ -33,6 +33,31 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 - [x] PHI encryption agent doc (`docs/agent/phi-encryption.md`)
 - [x] Updated .env.example with ModMed sandbox vars + PHI_ENCRYPTION_KEY
 - [x] 100 new tests (12 crypto + 7 rate-limiter + 11 circuit-breaker + 15 client + 11 fetchers + 11 patient + 17 appointment + 20 coverage + 16 practitioner = 120... wait, total is 254 with existing)
+- [x] PR #10 merged
+
+**Sprint 9-10: ModMed Integration — PR 2 (Sync + PA Detection + Dashboard)** (branch: `feat/modmed-sync-and-integration`)
+- [x] Migration: `modmed_sync_log`, `pa_lookup_log`, `practice_sync_state` tables with RLS
+  - 3 new enums: sync_type, sync_status, sync_trigger
+  - specialty column added to practices table
+  - Circuit breaker state persisted in practice_sync_state
+- [x] Supabase-backed circuit breaker store (`circuit-breaker-db-store.ts`)
+- [x] Sync orchestrator: pure function decoupled from trigger
+  - Full sync: patients, practitioners, coverage, appointments (30 days)
+  - Incremental sync: appointments since last sync + coverage refresh
+  - Checkpoint/resume via cursor field
+  - Sync log with records_fetched, records_created, records_updated, errors
+- [x] PA detection wiring: runs checkPARequired on synced appointments
+  - Logs every lookup to pa_lookup_log for observability
+  - Creates prior_auth records with documentation checklists for PA-required appointments
+- [x] Vercel cron route: `/api/cron/modmed-sync` every 15 min (CRON_SECRET gated)
+- [x] Manual sync trigger: server action + client button component
+- [x] Admin dashboard: ModMed Sync page
+  - Circuit breaker banner (red, prominent, with trip time + last error)
+  - Connected practices list with sync status + breaker state badges
+  - Unknown Rules Report: top payer+code combos with no rules
+  - Recent sync logs table
+- [x] Admin nav updated with ModMed Sync link
+- [x] 8 new tests (4 sync orchestrator + 4 PA detection) = 262 total
 - [ ] PR opened, pending review
 
 ### Decisions Made (Sprint 9-10)
