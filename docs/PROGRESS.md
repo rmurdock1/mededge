@@ -4,7 +4,27 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 
 ## Current Sprint
 
-**Sprint 6: Rewrite checkPARequired + Drop Compat View** (branch: `feat/sprint-6`)
+**Sprint 7: Policy Watch — AI-powered rule extraction** (branch: `feat/sprint-7-policy-watch`)
+- [x] Migration: `policy_watch_documents` + `policy_watch_staged_rules` tables with RLS
+- [x] 3 new enums: `policy_watch_document_status`, `staged_rule_status`, `staged_rule_kind`
+- [x] TypeScript types for new tables
+- [x] Claude extraction schemas (Zod): `extractedDrugRuleSchema`, `extractedProcedureRuleSchema`, `extractionResponseSchema`
+- [x] Claude client singleton (`src/lib/claude/client.ts`)
+- [x] Extraction prompt template with structured output spec (`src/lib/claude/prompts/extract-rules.ts`)
+- [x] Extraction parser: tolerant two-pass validation (top-level loose, per-rule strict)
+- [x] 4 server actions: `ingestDocument`, `runExtraction`, `reviewStagedRule`, `retryExtraction`
+- [x] Approval flow: writes to production via existing admin RPCs with `audit_source='policy_watch'`
+- [x] Auto-completes document status when all rules reviewed
+- [x] Admin nav updated with Policy Watch link
+- [x] Policy Watch document list page with status badges and token counts
+- [x] Document ingestion page with payer/plan hints and character limit
+- [x] Document detail page with staged rules review queue
+- [x] Individual rule review page with JSON editor and source excerpt sidebar
+- [x] Staged rule actions: approve, reject (with notes), edit & approve
+- [x] 29 new tests (7 extraction parser + 15 schema + 7 prompt builder)
+- [x] Migration applied to hosted Supabase
+
+**Sprint 6: Rewrite checkPARequired + Drop Compat View** (merged in PR #8)
 - [x] New `PALookupResult` discriminated union type (kind: "drug" | "procedure" | "unknown")
 - [x] `classifyCode()` — HCPCS vs CPT syntactic classifier with hint override
 - [x] Rewrote `checkPARequired()` to query `payer_rules_drug` and `payer_rules_procedure` directly
@@ -87,6 +107,73 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 ---
 
 ## Session Log
+
+## Session 2026-04-09 (Sprint 7)
+
+### Goal
+Build Policy Watch: AI-powered extraction of PA rules from payer coverage policy documents, with human review before production.
+
+### Completed
+- **Database**: Migration `20260412000001_policy_watch_staging.sql` — two new tables (`policy_watch_documents`, `policy_watch_staged_rules`), three enums, RLS (super_admin only), indexes for review queue performance
+- **Claude integration**:
+  - Singleton client (`src/lib/claude/client.ts`)
+  - Structured extraction prompt (`src/lib/claude/prompts/extract-rules.ts`) — system + user message pattern, HCPCS/CPT code examples, strict JSON output spec
+  - Tolerant two-pass Zod validation: top-level `extractionResponseSchema` uses `z.unknown()` arrays, then individual rules validated against strict `extractedDrugRuleSchema` / `extractedProcedureRuleSchema`. This means one bad rule doesn't kill the entire extraction.
+- **Extraction pipeline** (`src/lib/policy-watch/extraction.ts`):
+  - `parseExtractionResponse()` — pure function, strips markdown fences, validates, separates `extraction_confidence` and `source_document_excerpt` into dedicated columns
+  - Returns `StagedRuleCandidate[]` + skipped rules with error messages
+- **Server actions** (`src/lib/policy-watch/actions.ts`):
+  - `ingestDocument()` — validates input, creates document row
+  - `runExtraction()` — calls Claude, parses response, stages rules, records token usage
+  - `reviewStagedRule()` — approve (writes to production via existing admin RPCs with `audit_source='policy_watch'`) or reject (with notes)
+  - `retryExtraction()` — re-runs failed extractions
+  - `maybeCompleteDocument()` — auto-transitions document to 'completed' when all rules reviewed
+- **UI** (6 new pages/components):
+  - `/admin/policy-watch` — document list with status badges, pending review counter
+  - `/admin/policy-watch/ingest` — form with URL, text, payer/plan hints
+  - `/admin/policy-watch/[documentId]` — detail page with stats, staged rules, approve/reject/edit actions
+  - `/admin/policy-watch/[documentId]/review/[stagedRuleId]` — full JSON editor with source excerpt sidebar
+  - `DocumentStatusBadge`, `ExtractionConfidenceBadge`, `StagedRuleActions`, `StagedRuleReviewForm` components
+- **Tests**: 29 new tests across 3 files (extraction parser, schemas, prompt builder)
+
+### Decisions Made
+- **Two-pass validation for extraction response.** The top-level `extractionResponseSchema` uses `z.array(z.unknown())` so one bad rule doesn't fail the entire parse. Individual rules are then validated with strict per-rule schemas. Valid rules are staged, invalid ones logged and skipped.
+- **Paste-first for MVP, PDF fetch later.** Coverage policies are public documents the admin already has open. Adding PDF parsing (pdf-lib, edge function) adds complexity for marginal value. Sprint 8 can add URL-based PDF fetching.
+- **Direct RPC calls with `policy_watch` audit source.** Rather than modifying the existing `upsertDrugRule`/`upsertProcedureRule` server actions (which hardcode `source: "manual"`), the approval flow calls the SQL RPCs directly with `p_audit_source: 'policy_watch'`. This keeps Sprint 4 code unchanged.
+- **JSON editor for review, not structured form.** The extracted rule data has complex JSONB fields. A JSON textarea with format button (same pattern as drug-rule-form) lets the reviewer correct any field. The system injects `source_url`, `confidence_score: 0.7`, `last_verified_date`, and `change_reason` on approval.
+- **`confidence_score: 0.7` for all AI-extracted rules.** Per the payer-rules-engine spec: "Confidence score for AI-extracted rules starts at 0.7, increases to 0.9+ after human verification." The admin can bump it manually after the initial approval.
+- **`extraction_confidence` stored as a dedicated column** (not inside `extracted_data`). Same for `source_excerpt`. This enables filtering/sorting the review queue by confidence and keeps the data clean for the approval→production pipeline.
+
+### Files Added
+- `supabase/migrations/20260412000001_policy_watch_staging.sql`
+- `src/lib/claude/client.ts`
+- `src/lib/claude/schemas.ts`
+- `src/lib/claude/schemas.test.ts`
+- `src/lib/claude/prompts/extract-rules.ts`
+- `src/lib/claude/prompts/extract-rules.test.ts`
+- `src/lib/policy-watch/extraction.ts`
+- `src/lib/policy-watch/extraction.test.ts`
+- `src/lib/policy-watch/actions.ts`
+- `src/components/admin/policy-watch/document-status-badge.tsx`
+- `src/components/admin/policy-watch/extraction-confidence-badge.tsx`
+- `src/components/admin/policy-watch/staged-rule-actions.tsx`
+- `src/components/admin/policy-watch/staged-rule-review-form.tsx`
+- `src/app/(admin)/admin/policy-watch/page.tsx`
+- `src/app/(admin)/admin/policy-watch/ingest/page.tsx`
+- `src/app/(admin)/admin/policy-watch/[documentId]/page.tsx`
+- `src/app/(admin)/admin/policy-watch/[documentId]/review/[stagedRuleId]/page.tsx`
+
+### Files Modified
+- `src/lib/types.ts` (added Policy Watch types)
+- `src/app/(admin)/layout.tsx` (added Policy Watch nav item)
+- `docs/PROGRESS.md` (this file)
+
+### Next Steps
+1. Test with a real payer coverage policy PDF (manual end-to-end)
+2. ModMed sandbox integration (user preparing credentials)
+3. Sprint 8 enhancements: PDF URL fetch, bulk approve/reject, duplicate detection
+
+---
 
 ## Session 2026-04-09 (Sprint 6)
 
@@ -510,8 +597,8 @@ Track when we've identified a need for human expertise and whether it's been add
 
 - **Last lint check**: 2026-04-09 (clean)
 - **Last typecheck**: 2026-04-09 (clean)
-- **Unit tests**: 105 passing across 8 files
+- **Unit tests**: 134 passing across 11 files
 - **Integration tests**: 12 passing across 6 files (real-DB, run via `npm run test:integration`)
-- **Open branches**: `feat/sprint-6` (PR pending)
-- **Merged PRs**: #1 (Sprint 1+2), #2 (Sprint 3), #3 (Supabase MCP), #4 (Sprint 3 fixup), #5 (Sprint 3 hardening), #6 (Sprint 4), #7 (Sprint 5)
-- **Supabase migrations**: 22 files — 21 applied to hosted DB, 1 pending (`20260411000001`)
+- **Open branches**: `feat/sprint-7-policy-watch` (PR pending)
+- **Merged PRs**: #1 (Sprint 1+2), #2 (Sprint 3), #3 (Supabase MCP), #4 (Sprint 3 fixup), #5 (Sprint 3 hardening), #6 (Sprint 4), #7 (Sprint 5), #8 (Sprint 6)
+- **Supabase migrations**: 23 files — all applied to hosted DB

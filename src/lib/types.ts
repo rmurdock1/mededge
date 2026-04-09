@@ -279,3 +279,55 @@ export interface PAActivityLog {
   user_id: string | null;
   created_at: string;
 }
+
+// ---- Policy Watch (Sprint 7) ----
+
+export type PolicyWatchDocumentStatus =
+  | "pending_extraction"
+  | "extracting"
+  | "extracted"
+  | "extraction_failed"
+  | "completed"
+  | "archived";
+
+export type StagedRuleStatus = "pending_review" | "approved" | "rejected";
+
+export type StagedRuleKind = "drug" | "procedure";
+
+export type ExtractionConfidence = "high" | "medium" | "low";
+
+export interface PolicyWatchDocument {
+  id: string;
+  source_url: string;
+  source_text: string;
+  payer_name_hint: string | null;
+  plan_type_hint: string | null;
+  status: PolicyWatchDocumentStatus;
+  extraction_started_at: string | null;
+  extraction_completed_at: string | null;
+  extraction_error: string | null;
+  claude_model: string | null;
+  claude_input_tokens: number | null;
+  claude_output_tokens: number | null;
+  raw_extraction_json: Record<string, unknown> | null;
+  uploaded_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PolicyWatchStagedRule {
+  id: string;
+  document_id: string;
+  rule_kind: StagedRuleKind;
+  extracted_data: Record<string, unknown>;
+  source_excerpt: string | null;
+  extraction_confidence: ExtractionConfidence | null;
+  status: StagedRuleStatus;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  review_notes: string | null;
+  production_drug_rule_id: string | null;
+  production_procedure_rule_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
