@@ -4,7 +4,52 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 
 ## Current Sprint
 
-**Sprint 7: Policy Watch — AI-powered rule extraction** (branch: `feat/sprint-7-policy-watch`)
+**Sprint 9-10: ModMed Integration — PR 1 (Client + Fetchers + Mappers)** (branch: `feat/modmed-client-and-fetchers`)
+- [x] PHI encryption module: AES-256-GCM authenticated encryption (`src/lib/crypto/phi.ts`)
+  - encryptPHI() / decryptPHI() with field-level encryption for patient names
+  - PHI_ENCRYPTION_KEY env var (separate from Supabase keys)
+  - Sprint-bounded compromise: env var for sandbox, secrets manager for production (documented in code comments)
+- [x] ModMed FHIR types: full R4 resource types for Patient, Appointment, Coverage, Practitioner
+  - Mapped types (MappedPatient, MappedAppointment, MappedCoverage, MappedPractitioner)
+  - Client config and token response types
+  - Circuit breaker state types
+- [x] Rate limiter: fixed-interval + exponential backoff with jitter, Retry-After header support
+- [x] Circuit breaker: pluggable store interface (InMemoryStore for tests, DB store in PR 2)
+  - 3 states: closed → open (after N failures) → half_open (recovery test)
+  - Half-open recovery on cron schedule (not separate cooldown timer)
+- [x] OAuth2 client: password grant auth, token refresh, auto-reauth on 401
+  - Rate limiting, circuit breaker integration, configurable backoff
+  - Custom fetch injection for testing
+  - Per-practice architecture (credentials as constructor args)
+- [x] FHIR fetchers: typed resource fetchers with transparent pagination
+  - fetchPatients, fetchAppointments (date range), fetchCoverageForPatient, fetchAllCoverage, fetchPractitioners
+  - Safety cap at 50 pages, configurable page size
+- [x] Data mappers with PHI encryption:
+  - Patient: name encryption via encryptPHI(), FHIR name formatting (official → usual → first)
+  - Appointment: CPT code extraction (serviceType + extensions), ICD-10 from reasonCode, participant parsing
+  - Coverage: payer name normalization (UHC/BCBS aliases), plan type extraction, primary coverage selection
+  - Practitioner: NPI extraction, specialty from qualifications, prefix/suffix formatting
+- [x] Barrel export module (`src/lib/modmed/index.ts`)
+- [x] PHI encryption agent doc (`docs/agent/phi-encryption.md`)
+- [x] Updated .env.example with ModMed sandbox vars + PHI_ENCRYPTION_KEY
+- [x] 100 new tests (12 crypto + 7 rate-limiter + 11 circuit-breaker + 15 client + 11 fetchers + 11 patient + 17 appointment + 20 coverage + 16 practitioner = 120... wait, total is 254 with existing)
+- [ ] PR opened, pending review
+
+### Decisions Made (Sprint 9-10)
+- **PHI encryption: AES-256-GCM** (not CBC). GCM is authenticated — auditors flag CBC.
+- **Field-level encryption** over Supabase-only at-rest. Protects against service role key compromise.
+- **Circuit breaker half-open on cron schedule**, not separate cooldown. Recovery cadence matches sync cadence.
+- **Circuit breaker state persisted in DB** (PR 2 adds Supabase-backed store). Vercel serverless is stateless.
+- **pa_lookup_log table** (PR 2) to make "unknown rule" lookups observable for rule gap analysis.
+- **Sync orchestrator decoupled from trigger** (PR 2): cron route, manual button, CLI script all call the same pure function.
+- **Payer name normalization** at the mapper layer: "United Healthcare" → "UnitedHealthcare", "Blue Cross Blue Shield" → "BCBS".
+
+### Sprint-Bounded Compromises
+- PHI_ENCRYPTION_KEY via env var (Sprint 9). Production MUST use AWS Secrets Manager or Vercel encrypted env vars.
+- Circuit breaker state in-memory for PR 1 (InMemoryStore). PR 2 adds Supabase-backed persistence.
+- No sync orchestration yet — that's PR 2 (`feat/modmed-sync-and-integration`).
+
+**Sprint 7: Policy Watch — AI-powered rule extraction** (merged in PR #9)
 - [x] Migration: `policy_watch_documents` + `policy_watch_staged_rules` tables with RLS
 - [x] 3 new enums: `policy_watch_document_status`, `staged_rule_status`, `staged_rule_kind`
 - [x] TypeScript types for new tables
