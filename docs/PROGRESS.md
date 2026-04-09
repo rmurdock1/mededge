@@ -4,7 +4,7 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 
 ## Current Sprint
 
-**Sprint 3: Rule Schema Refactor** (in PR review)
+**Sprint 3: Rule Schema Refactor** (merged in PR #2 + #4, applied to hosted DB)
 - [x] Split `payer_rules` → `payer_rules_drug` + `payer_rules_procedure`
 - [x] Add `rule_audit_log` (immutable, super_admin only) + capture triggers
 - [x] Add `super_admin` role and `is_internal` practice flag
@@ -14,6 +14,7 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 - [x] TypeScript types for v2 schema + audit context helper
 - [x] Tests (35 passing)
 - [x] `docs/agent/rule-schema.md`
+- [x] Hardening pass: `security_invoker=on` on compat view + pinned `search_path` on the 4 new functions (this PR)
 
 **Sprint 1: Foundation** (Target: Weeks 1-2) — merged in PR #1
 - [x] Next.js project setup with App Router
@@ -44,6 +45,52 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 ---
 
 ## Session Log
+
+## Session 2026-04-09
+
+### Goal
+Apply Sprint 3 migrations to the hosted Supabase project (zfpjhkuqnmlgssuhelxu) via the new Supabase MCP and address advisor findings before starting Sprint 4.
+
+### Completed
+- Discovered the PR #2 review fixup (`add7f9b`) was lost during the squash merge — pushed too late, never made it to main. Recovered via cherry-pick onto `chore/sprint-3-review-fixup`, merged as PR #4.
+- Applied all 7 Sprint 3 migrations to the hosted DB via `mcp__supabase__apply_migration`, one per file. Every migration succeeded on first run.
+- Verified the post-migration state:
+  - `payer_rules` is now a VIEW (relkind='v')
+  - `payer_rules_drug` (14 rows), `payer_rules_procedure` (11 rows), `rule_audit_log` (25 rows) all created with RLS enabled
+  - `payer_rules_legacy_v1` preserved with the original 25 rows
+  - 14 + 11 = 25 — every legacy rule landed in exactly one of the new tables
+  - All 25 audit rows tagged `source='seed'`, `action='insert'` — GUC propagation worked, the silent-fallback path was never hit
+  - MedEdge Operations practice exists with `is_internal=true`
+  - `bootstrap_super_admin(uuid, text)` exists as SECURITY DEFINER, granted to service_role only
+  - INSTEAD OF triggers on the compat view block writes with the expected error message
+- Ran `mcp__supabase__get_advisors` for security: 1 ERROR + 8 WARNings.
+- Hardening migration `20260409000001_sprint_3_hardening.sql` addresses the 5 findings introduced by Sprint 3:
+  - `ALTER VIEW public.payer_rules SET (security_invoker = on)` — closes the `security_definer_view` ERROR
+  - `ALTER FUNCTION ... SET search_path = pg_catalog, public` on `bootstrap_super_admin`, `rule_audit_capture`, `rule_audit_log_block_mutation`, `payer_rules_view_block_write`
+
+### Decisions Made
+- **Recover the lost fixup before applying migrations**, not after. Reason: the `RAISE NOTICE` is exactly the observability we'll want when debugging Sprint 4 admin writes against the new audit triggers. Shipping the pre-review version first and back-filling later would mean writing Sprint 4 against a less-instrumented baseline.
+- **Hardening PR is scoped to Sprint 3 objects only**. The 4 pre-existing functions (`update_updated_at`, `get_practice_id`, `get_user_role`, `handle_new_user`) have the same `function_search_path_mutable` warning but are not Sprint 3 regressions. Bundling them in would be uninvited scope creep. Track separately as a generic hardening pass.
+- **`search_path = pg_catalog, public`** rather than empty + full qualification. Reason: the trigger and DEFINER functions reference plenty of pg_catalog built-ins (`current_setting`, `nullif`, `now`, `jsonb_each`, `to_jsonb`, `set_config`, `RAISE NOTICE`, etc.). An empty search_path would force qualifying every single one, which is noisy without adding security beyond what `pg_catalog, public` already gives us — third-party schemas still cannot resolve.
+
+### Failures and Mitigations
+- **Squash merge dropped PR #2 review fixup.** The fixup was pushed to the PR branch after the squash had already snapshotted the tree. `git merge-base HEAD add7f9b` returned the parent of the merge commit, confirming the fixup was never reachable from main. Mitigated by cherry-picking onto a fresh branch and merging as PR #4. Lesson for future: push fixups to PR branches *before* hitting the merge button, not after.
+
+### Open Questions
+- 4 pre-existing functions still have mutable search_paths. Should they be addressed in a follow-up hardening PR, or roll into a SOC 2 readiness pass closer to launch?
+
+### Next Steps
+- Apply hardening migration to hosted DB after PR merges
+- Re-run `get_advisors` to confirm 5 lints clear (1 ERROR + 4 WARNs from Sprint 3 functions)
+- Begin Sprint 4: super_admin admin dashboard for typed rule editing
+
+### Files Added
+- `supabase/migrations/20260409000001_sprint_3_hardening.sql`
+
+### Files Modified
+- `docs/PROGRESS.md` (this file)
+
+---
 
 ## Session 2026-04-08
 
