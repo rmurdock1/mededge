@@ -1,3 +1,7 @@
+// TODO: Sprint 6 — rewrite to use typed tables (payer_rules_drug, payer_rules_procedure)
+// or remove entirely. The payer_rules compatibility VIEW blocks writes, so this script
+// is currently non-functional. The JSON files in data/payer-rules/ have been updated to
+// v2 format (Sprint 5) but this script still reads v1 shape.
 import { createClient } from "@supabase/supabase-js";
 import * as fs from "fs";
 import * as path from "path";

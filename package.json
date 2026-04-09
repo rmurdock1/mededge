@@ -9,6 +9,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:integration": "vitest run --config vitest.config.integration.ts",
     "db:migrate": "supabase db push",
     "db:seed": "tsx scripts/seed-payer-rules.ts"
   },

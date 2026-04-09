@@ -12,7 +12,6 @@ import {
   procedureRuleFormSchema,
   parseJsonField,
 } from "./schemas";
-import { z } from "zod";
 
 // ---- Helpers ----
 
@@ -78,7 +77,7 @@ describe("documentationItemSchema", () => {
       required: true,
     });
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("non-empty string");
+    expect(result.error!.issues[0]!.message).toContain("non-empty string");
   });
 
   it("rejects non-boolean required field", () => {
@@ -87,7 +86,7 @@ describe("documentationItemSchema", () => {
       required: "yes",
     });
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("boolean");
+    expect(result.error!.issues[0]!.message).toContain("boolean");
   });
 
   it("rejects unknown fields (strict mode)", () => {
@@ -97,7 +96,7 @@ describe("documentationItemSchema", () => {
       extra_field: "oops",
     });
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("only allows fields");
+    expect(result.error!.issues[0]!.message).toContain("only allows fields");
   });
 });
 
@@ -120,7 +119,7 @@ describe("documentationRequirementsSchema", () => {
   it("rejects non-array input with actionable message", () => {
     const result = documentationRequirementsSchema.safeParse("not an array");
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("must be an array");
+    expect(result.error!.issues[0]!.message).toContain("must be an array");
   });
 });
 
@@ -146,7 +145,7 @@ describe("stepTherapyDetailsSchema", () => {
       duration_days: -5,
     });
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("positive integer");
+    expect(result.error!.issues[0]!.message).toContain("positive integer");
   });
 
   it("rejects unknown fields", () => {
@@ -154,7 +153,7 @@ describe("stepTherapyDetailsSchema", () => {
       foo: "bar",
     });
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("only allows fields");
+    expect(result.error!.issues[0]!.message).toContain("only allows fields");
   });
 });
 
@@ -178,7 +177,7 @@ describe("appealsPathwaySchema", () => {
   it("rejects empty levels array", () => {
     const result = appealsPathwaySchema.safeParse({ levels: [] });
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("at least one entry");
+    expect(result.error!.issues[0]!.message).toContain("at least one entry");
   });
 
   it("rejects invalid submission_method in level with actionable message", () => {
@@ -188,7 +187,7 @@ describe("appealsPathwaySchema", () => {
       ],
     });
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("must be one of");
+    expect(result.error!.issues[0]!.message).toContain("must be one of");
   });
 });
 
@@ -211,7 +210,7 @@ describe("labRequirementsSchema", () => {
   it("rejects unknown fields", () => {
     const result = labRequirementsSchema.safeParse({ urinalysis: true });
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("only allows fields");
+    expect(result.error!.issues[0]!.message).toContain("only allows fields");
   });
 });
 
@@ -233,7 +232,7 @@ describe("siteOfServiceRestrictionsSchema", () => {
   it("rejects empty allowed array", () => {
     const result = siteOfServiceRestrictionsSchema.safeParse({ allowed: [] });
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("at least one site");
+    expect(result.error!.issues[0]!.message).toContain("at least one site");
   });
 
   it("rejects invalid site value", () => {
@@ -241,7 +240,7 @@ describe("siteOfServiceRestrictionsSchema", () => {
       allowed: ["home"],
     });
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("must be one of");
+    expect(result.error!.issues[0]!.message).toContain("must be one of");
   });
 });
 
@@ -266,7 +265,7 @@ describe("modifierRequirementsSchema", () => {
       conditional: [{ modifier: "", when: "Always" }],
     });
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("modifier is required");
+    expect(result.error!.issues[0]!.message).toContain("modifier is required");
   });
 });
 
@@ -290,7 +289,7 @@ describe("unitsOrFrequencyLimitsSchema", () => {
       max_per_period: { count: -1, period_days: 30 },
     });
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("positive integer");
+    expect(result.error!.issues[0]!.message).toContain("positive integer");
   });
 });
 
@@ -314,7 +313,7 @@ describe("drugRuleFormSchema", () => {
       validDrugFormData({ hcpcs_code: null, ndc_code: null })
     );
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("HCPCS code or NDC code");
+    expect(result.error!.issues[0]!.message).toContain("HCPCS code or NDC code");
   });
 
   it("rejects empty payer_name", () => {
@@ -329,7 +328,7 @@ describe("drugRuleFormSchema", () => {
       validDrugFormData({ source_url: "not-a-url" })
     );
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("valid URL");
+    expect(result.error!.issues[0]!.message).toContain("valid URL");
   });
 
   it("rejects confidence_score > 1", () => {
@@ -337,7 +336,7 @@ describe("drugRuleFormSchema", () => {
       validDrugFormData({ confidence_score: 1.5 })
     );
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("between 0 and 1");
+    expect(result.error!.issues[0]!.message).toContain("between 0 and 1");
   });
 
   it("rejects confidence_score < 0", () => {
@@ -352,7 +351,7 @@ describe("drugRuleFormSchema", () => {
       validDrugFormData({ change_reason: "" })
     );
     expect(result.success).toBe(false);
-    expect(result.error!.issues[0].message).toContain("explain why");
+    expect(result.error!.issues[0]!.message).toContain("explain why");
   });
 
   it("accepts valid BCBS licensee", () => {

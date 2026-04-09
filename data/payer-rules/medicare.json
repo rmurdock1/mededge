@@ -1,108 +1,124 @@
-[
-  {
-    "payer_name": "Medicare",
-    "plan_type": "Medicare",
-    "cpt_code": "J7500",
-    "icd10_code": null,
-    "pa_required": false,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting medical necessity", "required": true, "description": "Standard Medicare documentation requirements for medical necessity" }
-    ],
-    "submission_method": "electronic",
-    "typical_turnaround_days": null,
-    "step_therapy_required": false,
-    "step_therapy_details": "Traditional Medicare does not require PA for Dupixent but may require documentation of medical necessity at time of claim.",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.cms.gov/medicare/coverage/determination-process",
-    "confidence_score": 0.85
-  },
-  {
-    "payer_name": "Medicare",
-    "plan_type": "Medicare",
-    "cpt_code": "J0135",
-    "icd10_code": null,
-    "pa_required": false,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting medical necessity", "required": true, "description": "Documentation supporting medical necessity for the biologic" }
-    ],
-    "submission_method": "electronic",
-    "typical_turnaround_days": null,
-    "step_therapy_required": false,
-    "step_therapy_details": "Traditional Medicare generally does not require step therapy for biologics but requires medical necessity documentation.",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.cms.gov/medicare/coverage/determination-process",
-    "confidence_score": 0.85
-  },
-  {
-    "payer_name": "Medicare",
-    "plan_type": "Medicare",
-    "cpt_code": "17311",
-    "icd10_code": null,
-    "pa_required": false,
-    "documentation_requirements": [],
-    "submission_method": "electronic",
-    "typical_turnaround_days": null,
-    "step_therapy_required": false,
-    "step_therapy_details": null,
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.cms.gov/medicare/coverage/determination-process",
-    "confidence_score": 0.9
-  },
-  {
-    "payer_name": "Medicare",
-    "plan_type": "Medicare",
-    "cpt_code": "96910",
-    "icd10_code": null,
-    "pa_required": false,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting medical necessity", "required": true, "description": "Diagnosis and treatment plan documentation" }
-    ],
-    "submission_method": "electronic",
-    "typical_turnaround_days": null,
-    "step_therapy_required": false,
-    "step_therapy_details": null,
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.cms.gov/medicare/coverage/determination-process",
-    "confidence_score": 0.85
-  },
-  {
-    "payer_name": "Medicare",
-    "plan_type": "Medicare Advantage",
-    "cpt_code": "J7500",
-    "icd10_code": null,
-    "pa_required": true,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Office visit note with atopic dermatitis diagnosis" },
-      { "item": "BSA assessment", "required": true, "description": "Body surface area documentation" },
-      { "item": "Prior treatment history", "required": true, "description": "Failed topical and/or systemic therapy" },
-      { "item": "Lab results - TB test", "required": true, "description": "TB screening before biologic" }
-    ],
-    "submission_method": "portal",
-    "typical_turnaround_days": 7,
-    "step_therapy_required": true,
-    "step_therapy_details": "Medicare Advantage plans typically require step therapy similar to commercial plans. Varies by MA plan carrier.",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.cms.gov/medicare/health-plans/medicareadvtgspecratestats",
-    "confidence_score": 0.7
-  },
-  {
-    "payer_name": "Medicare",
-    "plan_type": "Medicare Advantage",
-    "cpt_code": "J0135",
-    "icd10_code": null,
-    "pa_required": true,
-    "documentation_requirements": [
-      { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Psoriasis diagnosis and severity" },
-      { "item": "BSA assessment", "required": true, "description": "BSA documentation" },
-      { "item": "Prior treatment history", "required": true, "description": "Failed conventional systemic therapy" },
-      { "item": "Lab results - TB test", "required": true, "description": "TB screening" }
-    ],
-    "submission_method": "portal",
-    "typical_turnaround_days": 7,
-    "step_therapy_required": true,
-    "step_therapy_details": "MA plans generally follow CMS guidelines but add their own step therapy requirements. Check specific MA carrier.",
-    "last_verified_date": "2026-03-15",
-    "source_url": "https://www.cms.gov/medicare/health-plans/medicareadvtgspecratestats",
-    "confidence_score": 0.7
-  }
-]
+{
+  "version": 2,
+  "payer_name": "Medicare",
+  "plan_type": "Medicare",
+  "_note": "This file contains rules for both Traditional Medicare and Medicare Advantage. Entries with plan_type 'Medicare Advantage' override the top-level plan_type.",
+  "drugs": [
+    {
+      "plan_type": "Medicare",
+      "hcpcs_code": "J0517",
+      "drug_name": "Dupixent (dupilumab)",
+      "icd10_codes": [],
+      "pa_required": false,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting medical necessity", "required": true, "description": "Standard Medicare documentation requirements for medical necessity" }
+      ],
+      "submission_method": "electronic",
+      "typical_turnaround_days": null,
+      "step_therapy_required": false,
+      "step_therapy_details": null,
+      "lab_requirements": { "tb_test": false, "hepatitis_panel": false, "cbc": false, "liver_function": false },
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.cms.gov/medicare/coverage/determination-process",
+      "confidence_score": 0.7
+    },
+    {
+      "plan_type": "Medicare",
+      "hcpcs_code": "J0139",
+      "drug_name": "Humira (adalimumab)",
+      "icd10_codes": [],
+      "pa_required": false,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting medical necessity", "required": true, "description": "Documentation supporting medical necessity for the biologic" }
+      ],
+      "submission_method": "electronic",
+      "typical_turnaround_days": null,
+      "step_therapy_required": false,
+      "step_therapy_details": null,
+      "lab_requirements": { "tb_test": false, "hepatitis_panel": false, "cbc": false, "liver_function": false },
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.cms.gov/medicare/coverage/determination-process",
+      "confidence_score": 0.7
+    },
+    {
+      "plan_type": "Medicare Advantage",
+      "hcpcs_code": "J0517",
+      "drug_name": "Dupixent (dupilumab)",
+      "icd10_codes": [],
+      "pa_required": true,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Office visit note with atopic dermatitis diagnosis" },
+        { "item": "BSA assessment", "required": true, "description": "Body surface area documentation" },
+        { "item": "Prior treatment history", "required": true, "description": "Failed topical and/or systemic therapy" },
+        { "item": "Lab results - TB test", "required": true, "description": "TB screening before biologic" }
+      ],
+      "submission_method": "portal",
+      "typical_turnaround_days": 7,
+      "step_therapy_required": true,
+      "step_therapy_details": {
+        "required_drugs": ["topical corticosteroid"],
+        "duration_days": 90,
+        "exceptions": ["Varies by MA plan carrier"]
+      },
+      "lab_requirements": { "tb_test": true, "hepatitis_panel": false, "cbc": false, "liver_function": false },
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.cms.gov/medicare/health-plans/medicareadvtgspecratestats",
+      "confidence_score": 0.7
+    },
+    {
+      "plan_type": "Medicare Advantage",
+      "hcpcs_code": "J0139",
+      "drug_name": "Humira (adalimumab)",
+      "icd10_codes": [],
+      "pa_required": true,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting diagnosis", "required": true, "description": "Psoriasis diagnosis and severity" },
+        { "item": "BSA assessment", "required": true, "description": "BSA documentation" },
+        { "item": "Prior treatment history", "required": true, "description": "Failed conventional systemic therapy" },
+        { "item": "Lab results - TB test", "required": true, "description": "TB screening" }
+      ],
+      "submission_method": "portal",
+      "typical_turnaround_days": 7,
+      "step_therapy_required": true,
+      "step_therapy_details": {
+        "required_drugs": ["methotrexate OR phototherapy"],
+        "duration_days": 90,
+        "exceptions": ["Check specific MA carrier for exact requirements"]
+      },
+      "lab_requirements": { "tb_test": true, "hepatitis_panel": false, "cbc": false, "liver_function": false },
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.cms.gov/medicare/health-plans/medicareadvtgspecratestats",
+      "confidence_score": 0.7
+    }
+  ],
+  "procedures": [
+    {
+      "plan_type": "Medicare",
+      "cpt_code": "17311",
+      "procedure_name": "Mohs micrographic surgery, first stage",
+      "icd10_codes": [],
+      "pa_required": false,
+      "documentation_requirements": [],
+      "submission_method": "electronic",
+      "typical_turnaround_days": null,
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.cms.gov/medicare/coverage/determination-process",
+      "confidence_score": 0.7
+    },
+    {
+      "plan_type": "Medicare",
+      "cpt_code": "96910",
+      "procedure_name": "Photochemotherapy (Goeckerman/PUVA)",
+      "icd10_codes": [],
+      "pa_required": false,
+      "documentation_requirements": [
+        { "item": "Clinical notes documenting medical necessity", "required": true, "description": "Diagnosis and treatment plan documentation" }
+      ],
+      "submission_method": "electronic",
+      "typical_turnaround_days": null,
+      "last_verified_date": "2026-04-09",
+      "source_url": "https://www.cms.gov/medicare/coverage/determination-process",
+      "confidence_score": 0.7
+    }
+  ]
+}
