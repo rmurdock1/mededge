@@ -22,6 +22,11 @@ const navItems: NavItem[] = [
     href: "/dashboard/settings",
     roles: ["practice_admin"],
   },
+  {
+    label: "Admin",
+    href: "/admin",
+    roles: ["super_admin"],
+  },
 ];
 
 interface SideNavProps {
