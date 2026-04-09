@@ -69,8 +69,8 @@ describe("FHIRFetcher", () => {
       const patients = await fetcher.fetchPatients();
 
       expect(patients).toHaveLength(2);
-      expect(patients[0].id).toBe("p1");
-      expect(patients[1].id).toBe("p2");
+      expect(patients[0]!.id).toBe("p1");
+      expect(patients[1]!.id).toBe("p2");
       expect(mockClient.request).toHaveBeenCalledWith("ema/fhir/v2/Patient", {
         _count: "10",
       });
@@ -146,11 +146,11 @@ describe("FHIRFetcher", () => {
 
       await fetcher.fetchAppointments("2026-04-01", "2026-04-30");
 
-      const callArgs = (mockClient.request as ReturnType<typeof vi.fn>).mock.calls[0];
+      const callArgs = (mockClient.request as ReturnType<typeof vi.fn>).mock.calls[0]!;
       expect(callArgs[0]).toBe("ema/fhir/v2/Appointment");
       // Should include date range
-      expect(callArgs[1].date).toContain("ge2026-04-01");
-      expect(callArgs[1].date).toContain("le2026-04-30");
+      expect(callArgs[1]!.date).toContain("ge2026-04-01");
+      expect(callArgs[1]!.date).toContain("le2026-04-30");
     });
 
     it("works without date params", async () => {

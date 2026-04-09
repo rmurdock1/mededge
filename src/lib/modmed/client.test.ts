@@ -27,15 +27,16 @@ function createMockFetch(
 ) {
   let callIndex = 0;
   return vi.fn().mockImplementation(async () => {
-    const resp = responses[callIndex] ?? responses[responses.length - 1];
+    const resp = responses[callIndex] ?? responses[responses.length - 1]!;
     callIndex++;
+    const status = resp!.status;
     return {
-      ok: resp.status >= 200 && resp.status < 300,
-      status: resp.status,
-      statusText: resp.status === 200 ? "OK" : "Error",
-      json: async () => resp.body ?? {},
+      ok: status >= 200 && status < 300,
+      status,
+      statusText: status === 200 ? "OK" : "Error",
+      json: async () => resp!.body ?? {},
       headers: {
-        get: (name: string) => resp.headers?.[name] ?? null,
+        get: (name: string) => resp!.headers?.[name] ?? null,
       },
     };
   });
@@ -72,7 +73,7 @@ describe("ModMedClient", () => {
       await client.authenticate();
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
-      const [url, opts] = mockFetch.mock.calls[0];
+      const [url, opts] = mockFetch.mock.calls[0]!;
       expect(url).toContain("/firm/testfirm/ema/ws/oauth2/grant");
       expect(opts.method).toBe("POST");
       expect(opts.headers["x-api-key"]).toBe("test-api-key");
@@ -118,7 +119,7 @@ describe("ModMedClient", () => {
 
       await client.request("ema/fhir/v2/Patient");
 
-      const fhirCall = mockFetch.mock.calls[1];
+      const fhirCall = mockFetch.mock.calls[1]!;
       expect(fhirCall[1].headers.Authorization).toBe(
         "Bearer test-access-token"
       );
@@ -133,7 +134,7 @@ describe("ModMedClient", () => {
 
       await client.request("ema/fhir/v2/Patient", { _count: "50" });
 
-      const url = mockFetch.mock.calls[1][0];
+      const url = mockFetch.mock.calls[1]![0];
       expect(url).toContain("_count=50");
     });
 
@@ -298,7 +299,7 @@ describe("ModMedClient", () => {
         "https://full-url.com/next-page"
       );
 
-      const call = mockFetch.mock.calls[1];
+      const call = mockFetch.mock.calls[1]!;
       expect(call[0]).toBe("https://full-url.com/next-page");
       expect(result).toEqual({ resourceType: "Bundle", entry: [] });
     });

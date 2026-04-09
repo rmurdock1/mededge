@@ -50,11 +50,11 @@ export function formatPatientName(
 ): string {
   if (!names || names.length === 0) return "Unknown Patient";
 
-  // Pick best name entry
-  const name =
+  // Pick best name entry — guaranteed non-undefined because we checked length > 0
+  const name: FHIRHumanName =
     names.find((n) => n.use === "official") ??
     names.find((n) => n.use === "usual") ??
-    names[0];
+    names[0]!;
 
   // If there's a pre-formatted text field, use it
   if (name.text) return name.text;

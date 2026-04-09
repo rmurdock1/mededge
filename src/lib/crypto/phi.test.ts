@@ -55,7 +55,7 @@ describe("PHI encryption", () => {
     const encrypted = encryptPHI("Test Patient");
     const buf = Buffer.from(encrypted, "base64");
     // Flip a byte in the auth tag region (bytes 12-27)
-    buf[15] = buf[15] ^ 0xff;
+    buf[15] = buf[15]! ^ 0xff;
     const tampered = buf.toString("base64");
     expect(() => decryptPHI(tampered)).toThrow();
   });

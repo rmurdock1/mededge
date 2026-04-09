@@ -43,14 +43,15 @@ export function formatPractitionerName(
 ): string {
   if (!names || names.length === 0) return "Unknown Provider";
 
-  const name =
-    names.find((n) => n.use === "official") ?? names[0];
+  // Guaranteed non-undefined because we checked length > 0
+  const name: FHIRHumanName =
+    names.find((n) => n.use === "official") ?? names[0]!;
 
   if (name.text) return name.text;
 
   const parts: string[] = [];
 
-  if (name.prefix?.length) {
+  if (name.prefix && name.prefix.length > 0) {
     parts.push(name.prefix.join(" "));
   }
 
@@ -60,7 +61,7 @@ export function formatPractitionerName(
   if (given) parts.push(given);
   if (family) parts.push(family);
 
-  if (name.suffix?.length) {
+  if (name.suffix && name.suffix.length > 0) {
     parts.push(name.suffix.join(", "));
   }
 
@@ -85,13 +86,13 @@ export function extractNPI(
 export function extractSpecialty(
   practitioner: FHIRPractitioner
 ): string | null {
-  if (!practitioner.qualification?.length) return null;
+  if (!practitioner.qualification || practitioner.qualification.length === 0) return null;
 
-  const firstQual = practitioner.qualification[0];
+  const firstQual = practitioner.qualification[0]!;
   return (
-    firstQual.code?.text ??
-    firstQual.code?.coding?.[0]?.display ??
-    firstQual.code?.coding?.[0]?.code ??
+    firstQual.code.text ??
+    firstQual.code.coding?.[0]?.display ??
+    firstQual.code.coding?.[0]?.code ??
     null
   );
 }

@@ -59,7 +59,7 @@ export function extractBeneficiaryId(coverage: FHIRCoverage): string {
 export function extractPayerName(coverage: FHIRCoverage): string | null {
   if (!coverage.payor || coverage.payor.length === 0) return null;
 
-  const primaryPayor = coverage.payor[0];
+  const primaryPayor = coverage.payor[0]!;
 
   // Prefer display name
   if (primaryPayor.display) return normalizePayerName(primaryPayor.display);
@@ -121,7 +121,7 @@ export function pickPrimaryCoverage(
   coverages: FHIRCoverage[]
 ): FHIRCoverage | null {
   if (coverages.length === 0) return null;
-  if (coverages.length === 1) return coverages[0];
+  if (coverages.length === 1) return coverages[0]!;
 
   // Filter to active coverages
   const active = coverages.filter((c) => c.status === "active");
@@ -138,7 +138,7 @@ export function pickPrimaryCoverage(
     return bTime.localeCompare(aTime);
   });
 
-  return sorted[0];
+  return sorted[0] ?? null;
 }
 
 // ---------------------------------------------------------------------------
