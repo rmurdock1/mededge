@@ -4,6 +4,33 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 
 ## Current Sprint
 
+**Sprint 13: Auto-Appeal Engine** (branch: `feat/sprint-13-auto-appeal`)
+- [x] Appeal prompt template (`src/lib/claude/prompts/appeals/generate-appeal.ts`):
+  - 7 denial categories with tailored prompt guidance (missing docs, medical necessity, step therapy, not covered, coding error, timely filing, other)
+  - PHI-safe: uses {{PATIENT_NAME}}, {{DATE}}, {{PROVIDER_NAME}}, {{PRACTICE_NAME}} placeholders
+  - `classifyDenialReason()` auto-classifies free-text denial reasons into categories
+  - Includes documentation checklist status (completed vs missing) in prompt context
+- [x] `generateAppealLetter` server action: reads PA + patient + appointment data, builds prompt, calls Claude API (claude-sonnet-4-20250514, temp 0.3), stores draft, updates status to `appeal_draft`, logs with token usage
+- [x] `saveAppealLetter` server action: staff edits persisted, activity logged
+- [x] `recordAppealOutcome` server action: records appeal_approved/appeal_denied, writes to pa_outcomes for network intelligence, logs with revenue note
+- [x] `AppealEditor` client component: full appeal lifecycle UI
+  - Denied + no letter → "Generate Appeal with AI" CTA with brand styling
+  - Has letter → read view with Edit, Regenerate (spinning icon), Save buttons
+  - appeal_draft → "Mark as Submitted" CTA
+  - appeal_submitted → "Record Outcome" with Approved/Denied buttons
+- [x] PA detail page updated: AppealEditor replaces static letter display, denial reason banner shown for all appeal statuses
+- [x] Reports page updated: 6 KPI cards (added Appeals Filed, Appeal Win Rate), Appeal Performance radial chart with win/loss/pending breakdown
+- [x] 19 new tests for prompt builder and denial classifier (281 total, all passing)
+
+### Decisions Made
+- Claude API temp 0.3 for appeals (low creativity, high consistency)
+- Denial classifier is keyword-based heuristic, not AI — fast and deterministic
+- Appeal letter uses placeholders ({{PATIENT_NAME}}) filled server-side AFTER generation — keeps PHI out of Claude API
+- Outcome tracking writes to pa_outcomes with appeal_outcome field for Payer Intelligence Network
+- Reports shows appeal metrics alongside PA metrics (not a separate page)
+
+## Previous Sprints
+
 **Sprint 12: Staff-Facing PA Dashboard** (branch: `feat/sprint-12-staff-dashboard`)
 - [x] Dashboard page redesigned: 5-column stat row (Total, Needs Attention, Awaiting Decision, Approved, Denied), urgent PAs list with server-side PHI decryption, activity feed with relative time, empty state with CTA
 - [x] Side nav: Lucide icons (LayoutDashboard, FileCheck, BarChart3, Settings, Shield, LogOut), brand-colored active states

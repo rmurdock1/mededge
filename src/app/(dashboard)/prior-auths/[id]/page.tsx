@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { PAChecklist } from "@/components/prior-auths/pa-checklist";
 import { PAActionBar, PANotes } from "@/components/prior-auths/pa-actions";
 import { PAStatusBadge } from "@/components/prior-auths/pa-filters";
+import { AppealEditor } from "@/components/prior-auths/appeal-editor";
 import {
   ArrowLeft,
   Calendar,
@@ -111,7 +112,7 @@ export default async function PriorAuthDetailPage({ params }: Props) {
         <div className="space-y-5 lg:col-span-2">
           {/* Denial reason banner */}
           {pa.denial_reason &&
-            (pa.status === "denied" || pa.status === "appeal_denied") && (
+            ["denied", "appeal_draft", "appeal_submitted", "appeal_approved", "appeal_denied"].includes(pa.status) && (
               <Card className="border-destructive/30 bg-destructive/5">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
@@ -146,18 +147,19 @@ export default async function PriorAuthDetailPage({ params }: Props) {
             </CardContent>
           </Card>
 
-          {/* Appeal letter (if exists) */}
-          {pa.appeal_letter && (
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">Appeal Letter</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <pre className="whitespace-pre-wrap rounded-md bg-accent/50 p-4 text-sm">
-                  {pa.appeal_letter}
-                </pre>
-              </CardContent>
-            </Card>
+          {/* Appeal editor — shown for denied, appeal_draft, appeal_submitted, appeal_approved, appeal_denied */}
+          {(pa.status === "denied" ||
+            pa.status === "appeal_draft" ||
+            pa.status === "appeal_submitted" ||
+            pa.status === "appeal_approved" ||
+            pa.status === "appeal_denied" ||
+            pa.appeal_letter) && (
+            <AppealEditor
+              paId={pa.id}
+              status={pa.status}
+              denialReason={pa.denial_reason}
+              existingLetter={pa.appeal_letter}
+            />
           )}
 
           {/* Notes */}
