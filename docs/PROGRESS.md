@@ -4,7 +4,10 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 
 ## Current Sprint
 
-**Sprint 9-10: ModMed Integration — PR 1 (Client + Fetchers + Mappers)** (branch: `feat/modmed-client-and-fetchers`)
+**Sprint 9-10: ModMed Integration — COMPLETE** ✓
+
+**PR 1 (Client + Fetchers + Mappers)** — PR #10 merged
+(branch: `feat/modmed-client-and-fetchers`)
 - [x] PHI encryption module: AES-256-GCM authenticated encryption (`src/lib/crypto/phi.ts`)
   - encryptPHI() / decryptPHI() with field-level encryption for patient names
   - PHI_ENCRYPTION_KEY env var (separate from Supabase keys)
@@ -35,7 +38,8 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 - [x] 100 new tests (12 crypto + 7 rate-limiter + 11 circuit-breaker + 15 client + 11 fetchers + 11 patient + 17 appointment + 20 coverage + 16 practitioner = 120... wait, total is 254 with existing)
 - [x] PR #10 merged
 
-**Sprint 9-10: ModMed Integration — PR 2 (Sync + PA Detection + Dashboard)** (branch: `feat/modmed-sync-and-integration`)
+**PR 2 (Sync + PA Detection + Dashboard)** — PR #11 merged
+(branch: `feat/modmed-sync-and-integration`)
 - [x] Migration: `modmed_sync_log`, `pa_lookup_log`, `practice_sync_state` tables with RLS
   - 3 new enums: sync_type, sync_status, sync_trigger
   - specialty column added to practices table
@@ -58,7 +62,8 @@ This file is maintained by Claude Code as a living document. It tracks what was 
   - Recent sync logs table
 - [x] Admin nav updated with ModMed Sync link
 - [x] 8 new tests (4 sync orchestrator + 4 PA detection) = 262 total
-- [ ] PR opened, pending review
+- [x] PR #11 merged
+- [x] Migration applied to hosted Supabase (modmed_sync_log, pa_lookup_log, practice_sync_state all live with RLS)
 
 ### Decisions Made (Sprint 9-10)
 - **PHI encryption: AES-256-GCM** (not CBC). GCM is authenticated — auditors flag CBC.
