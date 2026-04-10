@@ -50,7 +50,8 @@ export async function toggleChecklistItem(
 
 export async function updatePAStatus(
   paId: string,
-  newStatus: string
+  newStatus: string,
+  denialReason?: string
 ): Promise<{ error?: string }> {
   const supabase = await createClient();
   const {
@@ -66,6 +67,11 @@ export async function updatePAStatus(
     updates.submitted_date = new Date().toISOString();
   } else if (newStatus === "approved" || newStatus === "denied") {
     updates.decision_date = new Date().toISOString();
+  }
+
+  // Set denial reason when marking as denied
+  if (newStatus === "denied" && denialReason) {
+    updates.denial_reason = denialReason;
   }
 
   const { error } = await supabase
