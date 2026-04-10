@@ -12,6 +12,8 @@ import {
   Pie,
   Cell,
   Legend,
+  RadialBarChart,
+  RadialBar,
 } from "recharts";
 
 interface StatusCount {
@@ -179,5 +181,66 @@ export function DenialReasonsChart({ data }: { data: DenialReason[] }) {
         />
       </PieChart>
     </ResponsiveContainer>
+  );
+}
+
+interface AppealMetrics {
+  total: number;
+  won: number;
+  lost: number;
+  pending: number;
+  winRate: number;
+}
+
+export function AppealSuccessChart({ data }: { data: AppealMetrics }) {
+  if (data.total === 0) {
+    return (
+      <div className="flex h-[200px] items-center justify-center text-sm text-muted-foreground">
+        No appeals filed yet.
+      </div>
+    );
+  }
+
+  const chartData = [
+    { name: "Win Rate", value: data.winRate, fill: "#10b981" },
+  ];
+
+  return (
+    <div className="flex items-center gap-8">
+      <ResponsiveContainer width={160} height={160}>
+        <RadialBarChart
+          innerRadius="70%"
+          outerRadius="100%"
+          data={chartData}
+          startAngle={90}
+          endAngle={-270}
+        >
+          <RadialBar
+            background={{ fill: "#f1f5f9" }}
+            dataKey="value"
+            cornerRadius={8}
+          />
+        </RadialBarChart>
+      </ResponsiveContainer>
+      <div className="space-y-2">
+        <p className="text-3xl font-bold text-success-700">{data.winRate}%</p>
+        <p className="text-sm text-muted-foreground">Appeal win rate</p>
+        <div className="space-y-1 pt-1 text-xs text-muted-foreground">
+          <p>
+            <span className="font-medium text-success-600">{data.won}</span> won
+          </p>
+          <p>
+            <span className="font-medium text-destructive">{data.lost}</span>{" "}
+            lost
+          </p>
+          {data.pending > 0 && (
+            <p>
+              <span className="font-medium text-amber-600">{data.pending}</span>{" "}
+              pending
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

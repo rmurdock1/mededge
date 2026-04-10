@@ -4,12 +4,15 @@ import {
   StatusBreakdownChart,
   PayerBreakdownChart,
   DenialReasonsChart,
+  AppealSuccessChart,
 } from "@/components/reports/report-charts";
 import {
   CheckCircle2,
   XCircle,
   Clock,
   TrendingUp,
+  Gavel,
+  DollarSign,
 } from "lucide-react";
 
 export default async function ReportsPage() {
@@ -93,6 +96,20 @@ export default async function ReportsPage() {
     .sort((a, b) => b.count - a.count)
     .slice(0, 6);
 
+  // Appeal metrics
+  const appealStatuses = ["appeal_submitted", "appeal_approved", "appeal_denied"];
+  const appealPAs = pas.filter(
+    (p) => appealStatuses.includes(p.status) || p.status === "appeal_draft"
+  );
+  const appealWon = pas.filter((p) => p.status === "appeal_approved").length;
+  const appealLost = pas.filter((p) => p.status === "appeal_denied").length;
+  const appealPending = pas.filter(
+    (p) => p.status === "appeal_submitted" || p.status === "appeal_draft"
+  ).length;
+  const appealDecided = appealWon + appealLost;
+  const appealWinRate =
+    appealDecided > 0 ? Math.round((appealWon / appealDecided) * 100) : 0;
+
   return (
     <div className="space-y-6">
       <div>
@@ -103,7 +120,7 @@ export default async function ReportsPage() {
       </div>
 
       {/* KPI row */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
         <KPICard
           label="Total PAs"
           value={pas.length}
@@ -125,6 +142,17 @@ export default async function ReportsPage() {
           value={decided.length - approvedCount}
           icon={XCircle}
           accent={decided.length - approvedCount > 0 ? "destructive" : undefined}
+        />
+        <KPICard
+          label="Appeals Filed"
+          value={appealPAs.length}
+          icon={Gavel}
+        />
+        <KPICard
+          label="Appeal Win Rate"
+          value={appealDecided > 0 ? `${appealWinRate}%` : "\u2014"}
+          icon={DollarSign}
+          accent={appealWinRate >= 80 ? "success" : appealWinRate >= 50 ? "warning" : undefined}
         />
       </div>
 
@@ -148,12 +176,29 @@ export default async function ReportsPage() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2">
+        <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Denial Reasons</CardTitle>
           </CardHeader>
           <CardContent>
             <DenialReasonsChart data={denialData} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Appeal Performance</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <AppealSuccessChart
+              data={{
+                total: appealPAs.length,
+                won: appealWon,
+                lost: appealLost,
+                pending: appealPending,
+                winRate: appealWinRate,
+              }}
+            />
           </CardContent>
         </Card>
       </div>
