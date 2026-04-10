@@ -2,7 +2,7 @@
 
 ## Why This Matters
 
-PracticeFlow processes Protected Health Information (PHI). HIPAA violations carry fines of $100-$50,000 per violation, up to $1.5M per year per violation category. Beyond fines, a breach destroys trust with medical practices and kills the business. Security is not a feature. It is a prerequisite.
+MedEdge processes Protected Health Information (PHI). HIPAA violations carry fines of $100-$50,000 per violation, up to $1.5M per year per violation category. Beyond fines, a breach destroys trust with medical practices and kills the business. Security is not a feature. It is a prerequisite.
 
 ## What Counts as PHI
 
@@ -50,7 +50,7 @@ Any individually identifiable health information, including:
 
 ## Business Associate Agreement (BAA)
 
-Before any PHI flows through PracticeFlow, we need signed BAAs with:
+Before any PHI flows through MedEdge, we need signed BAAs with:
 
 1. **Supabase**: Sign their HIPAA BAA (available on Pro plan). Must be done before creating any tables with PHI.
 2. **Vercel**: Check their HIPAA compliance status. If Vercel doesn't offer a BAA, consider alternatives like AWS Amplify or self-hosted Next.js on a HIPAA-eligible hosting provider.

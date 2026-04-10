@@ -2,7 +2,7 @@
 
 ## What It Is
 
-When a prior authorization is denied, PracticeFlow auto-generates a tailored appeal letter using AI, attaches the relevant clinical documentation, and prepares it for staff to review and submit. Over time, it learns which appeal strategies work best per payer.
+When a prior authorization is denied, MedEdge auto-generates a tailored appeal letter using AI, attaches the relevant clinical documentation, and prepares it for staff to review and submit. Over time, it learns which appeal strategies work best per payer.
 
 ## Why It Matters
 
@@ -41,7 +41,7 @@ The gap between "appeals work" and "nobody has time to appeal" is the exact prob
 - The letter follows payer-specific formatting requirements
 
 ### Step 4: Human review
-- Staff sees the draft appeal letter in PracticeFlow
+- Staff sees the draft appeal letter in MedEdge
 - Staff can edit, approve, or reject
 - Once approved, system marks the appeal as ready to submit
 - Staff submits through the payer's required channel (initially manual, later automated)

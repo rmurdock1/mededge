@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { AuthLayout } from "@/components/auth/auth-layout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { PRODUCT_NAME } from "@/lib/branding";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -17,8 +23,13 @@ export default function SignupPage() {
     setError(null);
     setLoading(true);
 
-    const supabase = createClient();
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      setLoading(false);
+      return;
+    }
 
+    const supabase = createClient();
     const { error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -42,134 +53,109 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 dark:bg-zinc-950">
-        <div className="w-full max-w-sm text-center">
-          <h1 className="text-2xl font-bold tracking-tight">Check your email</h1>
-          <p className="mt-2 text-sm text-zinc-500">
-            We sent a confirmation link to <strong>{email}</strong>. Click it to
-            activate your account.
+      <AuthLayout
+        heading="Check your email"
+        subheading={`We sent a confirmation link to ${email}. Click it to activate your ${PRODUCT_NAME} account.`}
+      >
+        <div className="rounded-lg border border-brand-200 bg-brand-50 p-4 text-sm text-brand-800">
+          <p className="font-medium">Almost there!</p>
+          <p className="mt-1 text-brand-600">
+            Check your inbox and click the confirmation link to get started. The
+            link expires in 24 hours.
           </p>
-          <a
+        </div>
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          <Link
             href="/login"
-            className="mt-6 inline-block text-sm font-medium text-zinc-900 underline dark:text-zinc-100"
+            className="font-medium text-brand-600 hover:text-brand-700"
           >
             Back to sign in
-          </a>
-        </div>
-      </div>
+          </Link>
+        </p>
+      </AuthLayout>
     );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 dark:bg-zinc-950">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold tracking-tight">MedEdge</h1>
-          <p className="mt-2 text-sm text-zinc-500">
-            Create your practice account
+    <AuthLayout
+      heading="Create your practice account"
+      subheading={`Get started with ${PRODUCT_NAME} in under two minutes. No credit card required.`}
+    >
+      <form onSubmit={handleSignup} className="space-y-4">
+        {error && (
+          <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
+
+        <div className="space-y-2">
+          <Label htmlFor="practiceName">Practice name</Label>
+          <Input
+            id="practiceName"
+            type="text"
+            value={practiceName}
+            onChange={(e) => setPracticeName(e.target.value)}
+            required
+            placeholder="Freeport Dermatology"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="fullName">Your name</Label>
+          <Input
+            id="fullName"
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            required
+            placeholder="Dr. Jane Smith"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="you@practice.com"
+            autoComplete="email"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={8}
+            placeholder="••••••••"
+            autoComplete="new-password"
+          />
+          <p className="text-xs text-muted-foreground">
+            Minimum 8 characters
           </p>
         </div>
 
-        <form onSubmit={handleSignup} className="space-y-4">
-          {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
-              {error}
-            </div>
-          )}
+        <Button type="submit" disabled={loading} className="w-full bg-brand-600 hover:bg-brand-700">
+          {loading ? "Creating account..." : "Create account"}
+        </Button>
+      </form>
 
-          <div>
-            <label
-              htmlFor="practiceName"
-              className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-            >
-              Practice name
-            </label>
-            <input
-              id="practiceName"
-              type="text"
-              value={practiceName}
-              onChange={(e) => setPracticeName(e.target.value)}
-              required
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900"
-              placeholder="Freeport Dermatology"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="fullName"
-              className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-            >
-              Your name
-            </label>
-            <input
-              id="fullName"
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900"
-              placeholder="Dr. Jane Smith"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="email"
-              className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900"
-              placeholder="you@practice.com"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={8}
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900"
-              placeholder="••••••••"
-            />
-            <p className="mt-1 text-xs text-zinc-400">Minimum 8 characters</p>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-          >
-            {loading ? "Creating account..." : "Create account"}
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-sm text-zinc-500">
-          Already have an account?{" "}
-          <a
-            href="/login"
-            className="font-medium text-zinc-900 underline dark:text-zinc-100"
-          >
-            Sign in
-          </a>
-        </p>
-      </div>
-    </div>
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Already have an account?{" "}
+        <Link
+          href="/login"
+          className="font-medium text-brand-600 hover:text-brand-700"
+        >
+          Sign in
+        </Link>
+      </p>
+    </AuthLayout>
   );
 }
