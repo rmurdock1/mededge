@@ -4,6 +4,26 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 
 ## Current Sprint
 
+**Sprint 12: Staff-Facing PA Dashboard** (branch: `feat/sprint-12-staff-dashboard`)
+- [x] Dashboard page redesigned: 5-column stat row (Total, Needs Attention, Awaiting Decision, Approved, Denied), urgent PAs list with server-side PHI decryption, activity feed with relative time, empty state with CTA
+- [x] Side nav: Lucide icons (LayoutDashboard, FileCheck, BarChart3, Settings, Shield, LogOut), brand-colored active states
+- [x] `/prior-auths` list page: filterable by status group (chips), payer (dropdown), text search; sortable table with patient name (decrypted), procedure, payer, status badge, dates; empty states for no data and no filter matches
+- [x] `/prior-auths/[id]` detail page: patient info header with contextual action button (Mark Ready / Submit / Start Appeal), denial reason banner, interactive documentation checklist with progress bar, notes (add via textarea), activity timeline sidebar, key details sidebar
+- [x] Server actions for PA mutations: `toggleChecklistItem`, `updatePAStatus`, `addPANote` — all with auth checks and activity logging
+- [x] `/reports` page with Recharts: 4 KPI cards (Total, Approval Rate, Avg Turnaround, Denials), status breakdown bar chart, payer breakdown stacked bar chart, denial reasons donut chart
+- [x] `/settings` page: practice info, ModMed connection status, team member list with role badges, invite form (email + role)
+- [x] `PAStatusBadge` component with semantic colors: brand purple for ready, success green for approved, destructive red for denied, blue for submitted, amber for pending
+- [x] All files pass tsc, ESLint, and 262 tests
+
+### Decisions Made
+- URL-based filtering for PA list (searchParams) — server component reads params, client component updates URL
+- Status filter uses group chips (All, Needs Attention, Submitted, Approved, Denied, Appeals) not individual statuses — reduces cognitive load
+- Contextual primary action on PA detail: single CTA changes based on status (Draft→Mark Ready, Ready→Submit, Denied→Start Appeal, Submitted→Approved/Denied buttons)
+- Reports aggregated server-side from `prior_auths` table — no separate analytics table needed for MVP
+- Native `<select>` for payer filter and role picker — avoids base-ui Select complexity for simple dropdowns
+
+## Previous Sprints
+
 **Sprint 11: Auth, Onboarding & Branding** (branch: `feat/sprint-11-auth-onboarding`)
 - [x] Installed shadcn/ui (Radix Nova preset), Recharts, Sonner, Lucide icons
 - [x] Swapped fonts: Geist → Inter (UI) + JetBrains Mono (code/data)
