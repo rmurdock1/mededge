@@ -4,6 +4,51 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 
 ## Current Sprint
 
+**Sprint 11: Auth, Onboarding & Branding** (branch: `feat/sprint-11-auth-onboarding`)
+- [x] Installed shadcn/ui (Radix Nova preset), Recharts, Sonner, Lucide icons
+- [x] Swapped fonts: Geist → Inter (UI) + JetBrains Mono (code/data)
+- [x] `src/lib/branding.ts` — PRODUCT_NAME + PRODUCT_TAGLINE constants (single-file rename)
+- [x] Brand color system: `brand-50` through `brand-950` (base #7C3AED), `success-50` through `success-950` (emerald)
+- [x] CSS variables for all colors (dark mode architecture ready, not active)
+- [x] shadcn primary = brand purple, focus rings = brand purple, charts = brand + success
+- [x] Renamed all PracticeFlow → MedEdge across 7 doc files (30 references)
+- [x] Auth pages rewritten with branded split-panel layout:
+  - `/login` — email + password, forgot-password link, branded left panel
+  - `/signup` — practice name + name + email + password, confirmation flow
+  - `/forgot-password` — email input, Supabase password reset email
+  - `/reset-password` — session check, new password form, success state
+- [x] Onboarding flow (auth-protected, minimal layout):
+  - `/onboarding/welcome` — 3-step overview with numbered cards
+  - `/onboarding/connect-pms` — ModMed credentials form, encrypted storage
+  - `/onboarding/sync` — click-to-start sync with progress steps
+  - `/onboarding/invite-team` — email + role invite form, Supabase admin invite
+- [x] Root `/` redirects to `/dashboard` (logged in) or `/login` (logged out)
+- [x] Side nav updated: brand purple active states, simplified nav items
+- [x] Dashboard stat cards use semantic colors (amber=warning, red=destructive, green=success)
+- [x] `src/lib/supabase/service.ts` — service role client for admin operations
+- [x] Demo seed script (`scripts/seed-demo.ts`):
+  - Plaza Park Dermatology practice with ModMed sandbox credentials
+  - 3 users: practice_admin, billing_manager, staff
+  - 25 patients (PHI-encrypted names), 40 appointments, 25 prior auths (7 status levels)
+  - ~75 activity log entries with actor attribution
+  - 2 sync logs, practice_sync_state
+  - 1 Policy Watch document + 5 staged rules (incl. material change to UHC Dupixent step therapy)
+- [x] `docs/demo-accounts.md` — full documentation of demo data
+- [x] `npm run db:seed:demo` script
+- [x] 262 tests pass, lint clean, tsc clean
+
+### Decisions Made (Sprint 11)
+- **Brand purple: #7C3AED** (Tailwind violet-600). Sophisticated without going neon. Full 50-950 scale as CSS vars.
+- **shadcn/ui with Radix Nova preset**. Accessible, unstyled primitives. Customized to brand purple primary.
+- **Inter + JetBrains Mono** via next/font. Inter for UI, JetBrains for code/data fields.
+- **Light mode only for now**, but CSS variables are set up for dark mode addition later.
+- **Sync page uses click-to-start** instead of auto-start. Cleaner for React strict mode and avoids effect-based setState.
+- **Policy Watch staged rule #1 is a material diff** against existing UHC Dupixent rule. Exercises the review queue's diff view.
+- **Staff sees all practice PAs** (option A). RLS is practice-scoped. "Assigned to me" toggle comes in Sprint 12.
+- **Audit log captures actor on every action** — activity timeline shows who did what and when.
+
+---
+
 **Sprint 9-10: ModMed Integration — COMPLETE** ✓
 
 **PR 1 (Client + Fetchers + Mappers)** — PR #10 merged

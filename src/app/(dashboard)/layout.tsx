@@ -30,7 +30,7 @@ export default async function DashboardLayout({
         practiceName={profile?.practices?.name ?? "Practice"}
         userRole={profile?.role ?? "staff"}
       />
-      <main className="flex-1 overflow-y-auto bg-zinc-50 p-6 dark:bg-zinc-950">
+      <main className="flex-1 overflow-y-auto bg-accent/30 p-6">
         {children}
       </main>
     </div>

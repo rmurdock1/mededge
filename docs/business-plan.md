@@ -1,11 +1,11 @@
-# PracticeFlow Business Plan
+# MedEdge Business Plan
 ## Prior Authorization Automation for Specialty Medical Practices
 
 ---
 
 ## 1. The business in one paragraph
 
-PracticeFlow automates prior authorization for small and mid-size specialty medical practices, starting with dermatology. We connect to practice management systems like ModMed, instantly flag which patients need PA, assemble the required documentation using AI, and track every authorization in one dashboard. Practices pay $149-499/month per provider. The product replaces 12+ hours of weekly staff time and unlocks revenue from payers that practices currently avoid. The exit path is acquisition by a PM/EHR vendor, clearinghouse, or RCM company within 3-5 years.
+MedEdge automates prior authorization for small and mid-size specialty medical practices, starting with dermatology. We connect to practice management systems like ModMed, instantly flag which patients need PA, assemble the required documentation using AI, and track every authorization in one dashboard. Practices pay $149-499/month per provider. The product replaces 12+ hours of weekly staff time and unlocks revenue from payers that practices currently avoid. The exit path is acquisition by a PM/EHR vendor, clearinghouse, or RCM company within 3-5 years.
 
 ---
 
@@ -75,7 +75,7 @@ Scenario 3: Growth (Year 3)
 |----------|---------|----------|-------|
 | Vercel hosting | $0-20 | - | Free tier covers early development |
 | Supabase Pro | $25 | - | Required for HIPAA (BAA) |
-| Domain (practiceflow.ai) | - | $30-50 | Annual registration |
+| Domain (mededge.ai) | - | $30-50 | Annual registration |
 | Anthropic API | $0-50 | - | Likely covered by employer |
 | ModMed sandbox | $0 | - | Free for approved vendors |
 | Freelance dev help | - | $2,000-4,000 | ModMed API integration assist |
@@ -214,15 +214,15 @@ Shows each practice exactly how much revenue they're missing by not accepting ce
 
 How it works: We combine free public data from CMS (marketplace enrollment by ZIP code, issuer-level enrollment by county) with Census Bureau SAHIE (county-level insurance coverage estimates) and CMS Provider Enrollment Data (how many dermatologists accept each payer per ZIP). Given a practice's ZIP code and their current payer list, we calculate the gap: "There are approximately 11,000 UHC members in your county. 42 dermatologists accept UHC locally. You don't. Estimated opportunity: $1,500-3,000/month."
 
-Why it matters: This reframes PracticeFlow from "save time on PA" to "make more money by accepting payers you've been avoiding." That's a fundamentally different sales conversation. No other PA tool does this.
+Why it matters: This reframes MedEdge from "save time on PA" to "make more money by accepting payers you've been avoiding." That's a fundamentally different sales conversation. No other PA tool does this.
 
 Build difficulty: Medium. All data is free and public. Requires downloading, normalizing, and joining CMS and Census CSV files. Can prototype a working version in 1-2 weeks.
 
-Strategic advantage: We can use this as a sales tool BEFORE the product is built. Walk into a pitch meeting, show a practice their revenue gap, and close them on PracticeFlow as the solution. Revenue Radar also becomes a marketing tool: publish "State of Dermatology Payer Access" reports using aggregated data to generate PR and inbound interest.
+Strategic advantage: We can use this as a sales tool BEFORE the product is built. Walk into a pitch meeting, show a practice their revenue gap, and close them on MedEdge as the solution. Revenue Radar also becomes a marketing tool: publish "State of Dermatology Payer Access" reports using aggregated data to generate PR and inbound interest.
 
 ### Feature 2: Auto-Appeal Engine
 
-When a PA gets denied, PracticeFlow auto-generates a tailored appeal letter using AI, addresses the specific denial reason, attaches relevant documentation, and prepares it for staff review and submission.
+When a PA gets denied, MedEdge auto-generates a tailored appeal letter using AI, addresses the specific denial reason, attaches relevant documentation, and prepares it for staff review and submission.
 
 How it works: The system reads the denial reason (missing documentation, medical necessity not established, step therapy not completed, etc.), cross-references the patient's clinical data from the PM, and uses the Claude API to draft an appeal letter that cites the payer's own coverage policy and addresses the denial head-on. Staff reviews, edits if needed, clicks approve, and submits.
 
@@ -234,9 +234,9 @@ Competitive context: Hathr.AI sells AI Medicare appeal letters for $45/month. NY
 
 ### Feature 3: Payer Intelligence Network
 
-An anonymized, aggregated database of PA outcomes across all PracticeFlow practices. Every PA processed feeds the network. Over time, patterns emerge that no single practice could ever see on their own.
+An anonymized, aggregated database of PA outcomes across all MedEdge practices. Every PA processed feeds the network. Over time, patterns emerge that no single practice could ever see on their own.
 
-How it works: Every time a PA is submitted through PracticeFlow, we record (anonymized, no patient data): payer, plan type, procedure, what documentation was included, outcome (approved/denied), denial reason if denied, and appeal outcome if appealed. After 100-200 PAs, patterns start appearing. After 1,000+, it becomes a genuine data asset.
+How it works: Every time a PA is submitted through MedEdge, we record (anonymized, no patient data): payer, plan type, procedure, what documentation was included, outcome (approved/denied), denial reason if denied, and appeal outcome if appealed. After 100-200 PAs, patterns start appearing. After 1,000+, it becomes a genuine data asset.
 
 Example insight: "Across our network, Aetna approves 92% of Dupixent PA requests when BSA (body surface area) photos are included in the initial submission. Without photos, approval drops to 61%. Your current submission for this patient is missing BSA documentation."
 
@@ -250,13 +250,13 @@ Build difficulty: Low to start. It's a database table (pa_outcomes) that records
 
 ### The acquisition thesis in detail
 
-**Why someone would buy PracticeFlow:**
+**Why someone would buy MedEdge:**
 
 1. Payer Intelligence Network: A proprietary dataset of anonymized PA outcomes across hundreds of practices and thousands of submissions. This data takes years and massive transaction volume to build. It cannot be replicated quickly. It is the single most defensible asset in the company.
 
-2. Revenue Opportunity Radar: A unique growth-focused layer that no PA competitor offers. It turns PracticeFlow from a cost-savings tool into a revenue expansion engine. Acquirers get a built-in upsell mechanism for their existing customer base.
+2. Revenue Opportunity Radar: A unique growth-focused layer that no PA competitor offers. It turns MedEdge from a cost-savings tool into a revenue expansion engine. Acquirers get a built-in upsell mechanism for their existing customer base.
 
-3. Auto-Appeal Engine with proven recovery data: A working system that generates appeal letters and tracks revenue recovered. The historical data showing "PracticeFlow recovers X% of denied claims" is a powerful sales proof point for the acquirer.
+3. Auto-Appeal Engine with proven recovery data: A working system that generates appeal letters and tracks revenue recovered. The historical data showing "MedEdge recovers X% of denied claims" is a powerful sales proof point for the acquirer.
 
 4. Payer rules database: A continuously-updated dataset of what every payer requires for every PA scenario across specialties. Combined with the intelligence network, this is hard to replicate.
 
@@ -344,7 +344,7 @@ If yes, the risk/reward ratio here is genuinely strong. Your downside is capped 
 ## 10. Immediate next steps (this week)
 
 1. Apply for ModMed API sandbox access at portal.api.modmed.com
-2. Register domain (practiceflow.ai or practiceflow.health)
+2. Register domain (mededge.ai or mededge.health)
 3. Set up GitHub repo (private) with CLAUDE.md and agent docs
 4. Ask Toby: "What are your top 5 payers and what procedures trigger PA most often?"
 5. Download CMS Marketplace PUFs and Census SAHIE data for Revenue Radar prototype

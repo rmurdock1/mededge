@@ -1,4 +1,4 @@
-# PracticeFlow
+# MedEdge
 
 Prior authorization automation for specialty medical practices, starting with dermatology. Connects to practice management systems (not EHR), flags PA requirements, assembles documentation with AI, tracks authorizations, and auto-generates appeal letters for denials. North star: acquisition exit within 3-5 years.
 

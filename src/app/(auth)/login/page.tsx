@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { AuthLayout } from "@/components/auth/auth-layout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -21,87 +26,80 @@ export default function LoginPage() {
     });
 
     if (authError) {
-      setError(authError.message);
+      if (authError.message.includes("Invalid login credentials")) {
+        setError(
+          "Invalid email or password. Please check your credentials and try again."
+        );
+      } else {
+        setError(authError.message);
+      }
       setLoading(false);
       return;
     }
 
-    // Redirect to dashboard on success
     window.location.href = "/dashboard";
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 dark:bg-zinc-950">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold tracking-tight">MedEdge</h1>
-          <p className="mt-2 text-sm text-zinc-500">
-            Sign in to your practice account
-          </p>
+    <AuthLayout
+      heading="Sign in to your account"
+      subheading="Enter your email and password to access your practice dashboard."
+    >
+      <form onSubmit={handleLogin} className="space-y-4">
+        {error && (
+          <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
+
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="you@practice.com"
+            autoComplete="email"
+          />
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          {error && (
-            <div className="rounded-md bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
-              {error}
-            </div>
-          )}
-
-          <div>
-            <label
-              htmlFor="email"
-              className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">Password</Label>
+            <Link
+              href="/forgot-password"
+              className="text-xs font-medium text-brand-600 hover:text-brand-700"
             >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900"
-              placeholder="you@practice.com"
-            />
+              Forgot password?
+            </Link>
           </div>
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            placeholder="••••••••"
+            autoComplete="current-password"
+          />
+        </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900"
-              placeholder="••••••••"
-            />
-          </div>
+        <Button type="submit" disabled={loading} className="w-full bg-brand-600 hover:bg-brand-700">
+          {loading ? "Signing in..." : "Sign in"}
+        </Button>
+      </form>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-          >
-            {loading ? "Signing in..." : "Sign in"}
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-sm text-zinc-500">
-          Need an account?{" "}
-          <a
-            href="/signup"
-            className="font-medium text-zinc-900 underline dark:text-zinc-100"
-          >
-            Sign up
-          </a>
-        </p>
-      </div>
-    </div>
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Need an account?{" "}
+        <Link
+          href="/signup"
+          className="font-medium text-brand-600 hover:text-brand-700"
+        >
+          Create a practice account
+        </Link>
+      </p>
+    </AuthLayout>
   );
 }

@@ -6,7 +6,7 @@ A data-driven feature that shows practices how much revenue they could unlock by
 
 ## Why It Matters
 
-Toby (our design partner) said she won't accept UHC patients because PA is too burdensome. She's not alone. Many small practices restrict their payer mix to avoid PA-heavy insurers. Revenue Radar quantifies what that avoidance costs them, then PracticeFlow makes the PA manageable so they can expand.
+Toby (our design partner) said she won't accept UHC patients because PA is too burdensome. She's not alone. Many small practices restrict their payer mix to avoid PA-heavy insurers. Revenue Radar quantifies what that avoidance costs them, then MedEdge makes the PA manageable so they can expand.
 
 This feature also doubles as a pre-product sales tool. We can show a prospect their revenue gap before they even sign up.
 
@@ -77,10 +77,10 @@ Note: These are estimates based on public data. The pitch is not "we guarantee t
 - Format: "Here's a free practice revenue report for [Practice Name]"
 
 ### Phase 2: Product Feature (month 6+)
-- Integrate into the PracticeFlow dashboard
+- Integrate into the MedEdge dashboard
 - Cross-reference with the practice's actual payer list from their PM system
 - Auto-calculate which payers represent the biggest untapped opportunity
-- Show alongside PA data: "You could add UHC and PracticeFlow will handle the PA"
+- Show alongside PA data: "You could add UHC and MedEdge will handle the PA"
 - Update data annually when CMS releases new PUFs
 
 ### Phase 3: Growth Engine (month 12+)

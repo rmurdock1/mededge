@@ -1,4 +1,4 @@
-# PracticeFlow Go-to-Market Plan
+# MedEdge Go-to-Market Plan
 
 ## Market Overview
 
@@ -51,10 +51,10 @@ Your dad is a dermatology lab sales rep in NY with established relationships at 
 Before the product is even mentioned, generate a Revenue Radar report for the prospect's ZIP code. Show them: "There are X patients with [payer] insurance within 10 miles of your office. You don't accept [payer]. Here's what that's costing you." This is the door opener. It makes the conversation about growth, not software.
 
 **Onboarding flow for warm leads**:
-1. Dad mentions PracticeFlow during a lab visit
+1. Dad mentions MedEdge during a lab visit
 2. Practice owner or billing manager expresses interest
 3. You send a personalized Revenue Radar report (5 minutes to generate)
-4. You schedule a 20-minute video call to walk through the report and demo PracticeFlow
+4. You schedule a 20-minute video call to walk through the report and demo MedEdge
 5. If they want to proceed, they sign up and you onboard them personally
 6. First month is free (or heavily discounted) to reduce friction
 
@@ -77,7 +77,7 @@ The best leads in healthcare come from doctor-to-doctor referrals. Dermatologist
 - No complicated tracking. Just ask "who referred you?" at signup.
 
 **Channel 2: ModMed Marketplace listing**
-Once you have 10+ practices and a track record, apply to be listed on the ModMed Marketplace. This puts PracticeFlow in front of every ModMed user when they browse integrations. ModMed may require a partnership agreement and technical review.
+Once you have 10+ practices and a track record, apply to be listed on the ModMed Marketplace. This puts MedEdge in front of every ModMed user when they browse integrations. ModMed may require a partnership agreement and technical review.
 
 **Channel 3: Content and thought leadership**
 Publish the Payer Intelligence data as industry insights:
@@ -122,7 +122,7 @@ Each specialty expansion follows the same playbook:
 - Leverage existing payer intelligence data (payer behavior applies across specialties)
 
 **Acquisition positioning**:
-By this point, PracticeFlow should have:
+By this point, MedEdge should have:
 - 50-150+ practices across 2-3 specialties
 - $500K-2M ARR
 - A proprietary Payer Intelligence Network with 5,000+ PA outcomes
@@ -146,9 +146,9 @@ This is an attractive acquisition target for: ModMed (adds PA to their platform)
 Target: 2-4 weeks from first conversation to signed contract. Healthcare sales cycles are typically 6-12 months, but small practices decide fast because the decision maker (the doctor/owner) is the same person who feels the PA pain every day. Our advantage is that we sell to the person who has the problem, not a procurement committee.
 
 ### Pricing objection handling
-"It's cheaper than hiring a person." A dedicated PA staff member costs $40K-55K/year. PracticeFlow at $299/provider for a 3-provider practice costs $10,764/year. That's 20-25% of the cost of a human, and it works 24/7, never calls in sick, and never quits.
+"It's cheaper than hiring a person." A dedicated PA staff member costs $40K-55K/year. MedEdge at $299/provider for a 3-provider practice costs $10,764/year. That's 20-25% of the cost of a human, and it works 24/7, never calls in sick, and never quits.
 
-"Show me the ROI." Revenue Radar shows the revenue opportunity. Auto-appeal data shows recovery from denials. Combined, the ROI story is: "PracticeFlow costs you $897/month. It enables you to accept payers worth $3,000-8,000/month in new revenue, and it recovers $1,000-2,000/month in denied claims. Net ROI: 4-10x your subscription."
+"Show me the ROI." Revenue Radar shows the revenue opportunity. Auto-appeal data shows recovery from denials. Combined, the ROI story is: "MedEdge costs you $897/month. It enables you to accept payers worth $3,000-8,000/month in new revenue, and it recovers $1,000-2,000/month in denied claims. Net ROI: 4-10x your subscription."
 
 ### Contract structure
 - Month-to-month. No annual commitments required. If the product delivers value, they stay. If it doesn't, they leave and we learn why.
@@ -210,4 +210,4 @@ Target: 2-4 weeks from first conversation to signed contract. Healthcare sales c
 
 ## The One-Sentence GTM Strategy
 
-Use dad's network to get 10 practices on PracticeFlow for free-to-cheap, lead every conversation with a Revenue Radar report that shows the doctor how much money they're missing, let the product and the data do the selling from there.
+Use dad's network to get 10 practices on MedEdge for free-to-cheap, lead every conversation with a Revenue Radar report that shows the doctor how much money they're missing, let the product and the data do the selling from there.

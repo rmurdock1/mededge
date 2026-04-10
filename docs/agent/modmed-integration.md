@@ -2,7 +2,7 @@
 
 ## Overview
 
-PracticeFlow connects to ModMed's Proprietary FHIR API (not the Certified FHIR API). The Proprietary API provides access to Patient, Appointment, Insurance, and other PM-side resources. We connect to MMPM (Practice Management), not EMA (EHR).
+MedEdge connects to ModMed's Proprietary FHIR API (not the Certified FHIR API). The Proprietary API provides access to Patient, Appointment, Insurance, and other PM-side resources. We connect to MMPM (Practice Management), not EMA (EHR).
 
 ## Getting Access
 
@@ -94,7 +94,7 @@ Each practice has its own:
 - OAuth credentials (username, password, API key)
 - All stored encrypted in the `practices` table
 
-The same PracticeFlow application instance can serve multiple practices, authenticating to each practice's ModMed instance separately.
+The same MedEdge application instance can serve multiple practices, authenticating to each practice's ModMed instance separately.
 
 ## Path to Production
 
