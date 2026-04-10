@@ -4,6 +4,14 @@ import { useTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { updatePAStatus, addPANote } from "@/lib/prior-auths/actions";
 import {
   Send,
@@ -60,6 +68,8 @@ function getPrimaryAction(status: string) {
 
 export function PAActionBar({ paId, status }: PAActionsProps) {
   const [isPending, startTransition] = useTransition();
+  const [showDenialDialog, setShowDenialDialog] = useState(false);
+  const [denialReason, setDenialReason] = useState("");
   const router = useRouter();
   const action = getPrimaryAction(status);
 
@@ -73,58 +83,113 @@ export function PAActionBar({ paId, status }: PAActionsProps) {
     });
   }
 
-  return (
-    <div className="flex items-center gap-2">
-      {action && (
-        <Button
-          onClick={handleAction}
-          disabled={isPending}
-          className={action.className}
-          size="sm"
-        >
-          <action.icon className="mr-1.5 h-3.5 w-3.5" />
-          {isPending ? "Updating..." : action.label}
-        </Button>
-      )}
+  function handleDenied() {
+    if (!denialReason.trim()) return;
+    startTransition(async () => {
+      const result = await updatePAStatus(paId, "denied", denialReason.trim());
+      if (!result.error) {
+        setShowDenialDialog(false);
+        setDenialReason("");
+        router.refresh();
+      }
+    });
+  }
 
-      {/* Secondary actions for submitted PAs */}
-      {(status === "submitted" || status === "pending") && (
-        <>
+  return (
+    <>
+      <div className="flex items-center gap-2">
+        {action && (
           <Button
-            variant="outline"
-            size="sm"
+            onClick={handleAction}
             disabled={isPending}
-            onClick={() =>
-              startTransition(async () => {
-                await updatePAStatus(paId, "approved");
-                router.refresh();
-              })
-            }
-          >
-            <CheckCircle2 className="mr-1.5 h-3.5 w-3.5 text-success-600" />
-            Approved
-          </Button>
-          <Button
-            variant="outline"
+            className={action.className}
             size="sm"
-            disabled={isPending}
-            onClick={() =>
-              startTransition(async () => {
-                await updatePAStatus(paId, "denied");
-                router.refresh();
-              })
-            }
           >
-            <XCircle className="mr-1.5 h-3.5 w-3.5 text-destructive" />
-            Denied
+            <action.icon className="mr-1.5 h-3.5 w-3.5" />
+            {isPending ? "Updating..." : action.label}
           </Button>
-        </>
-      )}
-    </div>
+        )}
+
+        {/* Secondary actions for submitted PAs */}
+        {(status === "submitted" || status === "pending") && (
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={isPending}
+              onClick={() =>
+                startTransition(async () => {
+                  await updatePAStatus(paId, "approved");
+                  router.refresh();
+                })
+              }
+            >
+              <CheckCircle2 className="mr-1.5 h-3.5 w-3.5 text-success-600" />
+              Approved
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={isPending}
+              onClick={() => setShowDenialDialog(true)}
+            >
+              <XCircle className="mr-1.5 h-3.5 w-3.5 text-destructive" />
+              Denied
+            </Button>
+          </>
+        )}
+      </div>
+
+      {/* Denial reason dialog */}
+      <Dialog open={showDenialDialog} onOpenChange={setShowDenialDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Record Denial</DialogTitle>
+            <DialogDescription>
+              Enter the denial reason from the payer. This will be used to
+              generate a tailored appeal letter.
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            value={denialReason}
+            onChange={(e) => setDenialReason(e.target.value)}
+            placeholder="e.g., Medical necessity not established — patient does not meet clinical criteria for biologic therapy."
+            className="min-h-[100px]"
+            autoFocus
+          />
+          <DialogFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setShowDenialDialog(false);
+                setDenialReason("");
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleDenied}
+              disabled={isPending || !denialReason.trim()}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              {isPending ? "Saving..." : "Record Denial"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
-export function PANotes({ paId, notes }: { paId: string; notes: string | null }) {
+export function PANotes({
+  paId,
+  notes,
+}: {
+  paId: string;
+  notes: string | null;
+}) {
   const [isAdding, setIsAdding] = useState(false);
   const [noteText, setNoteText] = useState("");
   const [isPending, startTransition] = useTransition();

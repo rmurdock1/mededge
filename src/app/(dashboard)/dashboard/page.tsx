@@ -1,15 +1,14 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PRODUCT_NAME } from "@/lib/branding";
 import { decryptPHI } from "@/lib/crypto/phi";
+import { PAStatusBadge } from "@/components/prior-auths/pa-filters";
 import {
   AlertCircle,
   CheckCircle2,
   Clock,
-  FileX2,
   FileCheck,
   ArrowRight,
 } from "lucide-react";
@@ -94,7 +93,7 @@ export default async function DashboardPage() {
         <StatCard
           label="Total"
           value={totalPAs ?? 0}
-          icon={FileX2}
+          icon={FileCheck}
         />
         <StatCard
           label="Needs Attention"
@@ -117,7 +116,7 @@ export default async function DashboardPage() {
         <StatCard
           label="Denied"
           value={deniedCount ?? 0}
-          icon={FileX2}
+          icon={AlertCircle}
           accent={deniedCount ? "destructive" : undefined}
         />
       </div>
@@ -272,38 +271,6 @@ function StatCard({
         </p>
       </CardContent>
     </Card>
-  );
-}
-
-function PAStatusBadge({ status }: { status: string }) {
-  const config: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
-    draft: { label: "Draft", variant: "secondary" },
-    ready: { label: "Ready", variant: "default" },
-    submitted: { label: "Submitted", variant: "outline" },
-    pending: { label: "Pending", variant: "outline" },
-    approved: { label: "Approved", variant: "default" },
-    denied: { label: "Denied", variant: "destructive" },
-    appeal_draft: { label: "Appeal Draft", variant: "secondary" },
-    appeal_submitted: { label: "Appeal Sent", variant: "outline" },
-    appeal_approved: { label: "Appeal Won", variant: "default" },
-    appeal_denied: { label: "Appeal Denied", variant: "destructive" },
-    expired: { label: "Expired", variant: "secondary" },
-  };
-
-  const c = config[status] ?? { label: status, variant: "secondary" as const };
-
-  // Custom styling beyond the base badge variants
-  const customClass =
-    status === "approved" || status === "appeal_approved"
-      ? "bg-success-100 text-success-700 hover:bg-success-100"
-      : status === "ready"
-        ? "bg-brand-100 text-brand-700 hover:bg-brand-100"
-        : "";
-
-  return (
-    <Badge variant={c.variant} className={customClass}>
-      {c.label}
-    </Badge>
   );
 }
 

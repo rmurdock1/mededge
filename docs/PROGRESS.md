@@ -4,6 +4,24 @@ This file is maintained by Claude Code as a living document. It tracks what was 
 
 ## Current Sprint
 
+**Sprint 14: Polish & Coherence** (branch: `feat/sprint-14-polish`)
+- [x] Loading skeletons for all 5 dashboard routes (dashboard, prior-auths list, prior-auths detail, reports, settings)
+- [x] Error boundary (`error.tsx`) for dashboard route group with error ID, retry button, "your data is safe" messaging
+- [x] Not-found page for PA detail (`not-found.tsx`) with guidance and back link
+- [x] Denial reason dialog — when staff marks PA as denied, a dialog prompts for the denial reason (feeds into appeal generation)
+- [x] Dashboard deduplication: removed local `PAStatusBadge`, now imports shared component from `pa-filters.tsx`
+- [x] Icon consistency: "Total" stat card now uses `FileCheck` (was `FileX2`), "Denied" uses `AlertCircle`
+- [x] Removed unused `Badge` import from dashboard
+- [x] All 281 tests passing, tsc clean, lint clean
+
+### Decisions Made
+- Loading skeletons match the exact layout of each page (not generic spinners) — feels faster and more polished
+- Single error boundary at `(dashboard)` route group level catches all child route errors — simpler than per-page
+- Denial reason dialog uses shadcn Dialog (base-ui) — captures reason inline before status change, no page navigation
+- Shared `PAStatusBadge` component is the single source of truth for status badge styling
+
+## Previous Sprints
+
 **Sprint 13: Auto-Appeal Engine** (branch: `feat/sprint-13-auto-appeal`)
 - [x] Appeal prompt template (`src/lib/claude/prompts/appeals/generate-appeal.ts`):
   - 7 denial categories with tailored prompt guidance (missing docs, medical necessity, step therapy, not covered, coding error, timely filing, other)
